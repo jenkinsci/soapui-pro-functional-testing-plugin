@@ -1,0 +1,27 @@
+# Project files
+*.iml
+*.idea
+.settings/
+.classpath
+.project
+*-ide-plugin.xml
+.sonar
+
+# Logs
+*.log
+
+# Build folders
+target/
+ready-api-service-v-server/src/main/resources/frontend
+
+# plugin / extension folders
+soapui/ext
+soapui/plugins
+
+# Altered tests
+soapui-pro/test/
+soapui-pro/ext
+
+# Misc
+proguard-mapping.txt
+.groovy
