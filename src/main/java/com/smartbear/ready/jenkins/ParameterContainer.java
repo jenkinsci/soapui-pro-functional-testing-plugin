@@ -1,0 +1,85 @@
+package com.smartbear.ready.jenkins;
+
+import java.io.File;
+
+public class ParameterContainer {
+    private String pathToTestrunner;
+    private String pathToProjectFile;
+    private String testSuite;
+    private String testCase;
+    private String projectPassword;
+    private String environment;
+    private File workspace;
+
+    public String getPathToTestrunner() {
+        return pathToTestrunner;
+    }
+
+    public String getPathToProjectFile() {
+        return pathToProjectFile;
+    }
+
+    public String getTestSuite() {
+        return testSuite;
+    }
+
+    public String getTestCase() {
+        return testCase;
+    }
+
+    public String getProjectPassword() {
+        return projectPassword;
+    }
+
+    public String getEnvironment() {
+        return environment;
+    }
+
+    public File getWorkspace() {
+        return workspace;
+    }
+
+    public static class Builder {
+        ParameterContainer parameterContainer = new ParameterContainer();
+
+        public ParameterContainer build() {
+            return parameterContainer;
+        }
+
+        public Builder withPathToTestrunner(String pathToTestrunner) {
+            parameterContainer.pathToTestrunner = pathToTestrunner;
+            return this;
+        }
+
+        public Builder withPathToProjectFile(String pathToProjectFile) {
+            parameterContainer.pathToProjectFile = pathToProjectFile;
+            return this;
+        }
+
+        public Builder withTestSuite(String testSuite) {
+            parameterContainer.testSuite = testSuite;
+            return this;
+        }
+
+        public Builder withTestCase(String testCase) {
+            parameterContainer.testCase = testCase;
+            return this;
+        }
+
+        public Builder withProjectPassword(String projectPassword) {
+            parameterContainer.projectPassword = projectPassword;
+            return this;
+        }
+
+        public Builder withEnvironment(String environment) {
+            parameterContainer.environment = environment;
+            return this;
+        }
+
+        public Builder withWorkspace(File workspace) {
+            parameterContainer.workspace = workspace;
+            return this;
+        }
+
+    }
+}
