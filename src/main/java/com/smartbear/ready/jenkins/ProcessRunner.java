@@ -82,6 +82,7 @@ class ProcessRunner {
         }
 
         ProcessBuilder pb = new ProcessBuilder(processParameterList);
+        pb.redirectErrorStream(true);
         out.println("Starting SoapUI Pro functional test.");
         final Process process = pb.start();
 
