@@ -20,7 +20,7 @@
     </f:entry>
     <f:entry title="Project Password" field="projectPassword"
              description="Specifies the encryption password.">
-        <f:password/>
+        <f:password autocomplete="new-password"/>
     </f:entry>
     <f:entry title="Environment" field="environment"
              description="Specifies the environment configuration for the test run.">
