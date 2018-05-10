@@ -95,7 +95,6 @@ class ProcessRunner {
                         out.println(s);
                         if (s.contains(TERMINATION_STRING)) {
                             out.println("No license was found! Exiting.");
-                            build.doStop();
                             build.setResult(Result.FAILURE);
                             process.destroy();
                             return;
@@ -103,8 +102,6 @@ class ProcessRunner {
                     }
                 } catch (IOException e) {
                     e.printStackTrace(out);
-                } catch (ServletException e) {
-                    e.printStackTrace();
                 }
             }
         }).start();
