@@ -158,7 +158,10 @@ class ProcessRunner {
         @Override
         public void startElement(String uri, String localName, String qName, Attributes attributes) throws MySAXTerminatorException {
             if (lastElementToRead.equals(qName)) {
-                isSoapUIProProject = !attributes.getValue(ATTRIBUTE_TO_CHECK).isEmpty();
+                String value = attributes.getValue(ATTRIBUTE_TO_CHECK);
+                if (value != null) {
+                    isSoapUIProProject = !value.isEmpty();
+                }
                 throw new MySAXTerminatorException();
             }
         }
