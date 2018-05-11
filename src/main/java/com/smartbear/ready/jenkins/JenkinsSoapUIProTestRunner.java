@@ -6,6 +6,7 @@ import hudson.Launcher;
 import hudson.model.AbstractBuild;
 import hudson.model.AbstractProject;
 import hudson.model.BuildListener;
+import hudson.model.Result;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
@@ -96,7 +97,7 @@ public class JenkinsSoapUIProTestRunner extends Builder {
             if (process != null) {
                 try {
                     process.waitFor();
-                    if (build.isBuilding()) {
+                    if (build.getResult() != Result.FAILURE) {
                         boolean published = new ReportPublisher().publish(build, listener);
                         if (!published) {
                             out.println("JUnit-style report was not published!");
