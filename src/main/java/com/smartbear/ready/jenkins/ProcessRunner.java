@@ -21,9 +21,9 @@ import java.util.Arrays;
 import java.util.List;
 
 class ProcessRunner {
-    public final static String READYAPI_REPORT_DIRECTORY = "\\ReadyAPI_report";
+    public final static String READYAPI_REPORT_DIRECTORY = File.separator + "ReadyAPI_report";
     private static final String TESTRUNNER_NAME = "testrunner";
-    private static final String COMPOSITE_PROJECT_SETTINGS_FILE_PATH = "\\settings.xml";
+    private static final String COMPOSITE_PROJECT_SETTINGS_FILE_PATH = File.separator + "settings.xml";
     private static final String LAST_ELEMENT_TO_READ = "con:soapui-project";
     private static final String ATTRIBUTE_TO_CHECK = "updated";
     private static final String TERMINATION_STRING = "Please enter absolute path of the license file";
