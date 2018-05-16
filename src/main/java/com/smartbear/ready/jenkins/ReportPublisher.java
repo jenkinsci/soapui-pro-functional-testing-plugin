@@ -11,7 +11,7 @@ public class ReportPublisher {
 
     boolean publish(AbstractBuild build, BuildListener listener) {
         try {
-            File reportFile = new File(build.getWorkspace() + "\\ReadyAPI_report\\report.xml");
+            File reportFile = new File(build.getWorkspace() + ProcessRunner.READYAPI_REPORT_DIRECTORY + File.separator + "report.xml");
             if (!reportFile.exists()) {
                 throw new Exception("Report file does not exist!");
             }
