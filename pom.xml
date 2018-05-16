@@ -16,10 +16,10 @@
     </properties>
 
     <groupId>com.smartbear</groupId>
-    <artifactId>soapui-pro-jenkins-plugin</artifactId>
+    <artifactId>soapui-pro-functional-testing</artifactId>
     <packaging>hpi</packaging>
-	<name>Jenkins SoapUI Pro Plugin</name>
-	<version>2.4.0-SNAPSHOT</version>
+	<name>SoapUI Pro Functional Testing Plugin</name>
+	<version>1.0</version>
 
     <dependencies>
         <dependency>

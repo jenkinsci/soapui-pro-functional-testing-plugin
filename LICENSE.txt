@@ -1,9 +1,9 @@
 ﻿-----------------
-Jenkins SoapUI Pro Plugin, copyright (C) 2018 smartbear.com
+SoapUI Pro Functional Testing Plugin, copyright (C) 2018 smartbear.com
 Licensed under the EUPL, Version 1.1 or - as soon as they will be approved by the European Commission - subsequent
 versions of the EUPL (the "Licence");
 You may not use this work except in compliance with the Licence.
-Jenkins SoapUI Pro Plugin is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
+SoapUI Pro Functional Testing Plugin is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.
 -----------------
 European Union Public Licence V. 1.1
 EUPL © the European Community 2007

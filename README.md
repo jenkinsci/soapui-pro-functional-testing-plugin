@@ -1,6 +1,6 @@
-# Jenkins SoapUI Pro Plugin
+# SoapUI Pro Functional Testing Plugin
 
-This is the Jenkins SoapUI Pro Plugin code repository.
+This is the SoapUI Pro Functional Testing Plugin code repository.
 
 For help developing Jenkins plugins in general, see the [Jenkins plugin tutorial](https://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial).
 
