@@ -1,4 +1,4 @@
 <?jelly escape-by-default='false'?>
 <div>
-  Executes API tests designed in SoapUI Pro.
+  Execute API tests designed in SoapUI Pro.
 </div>
