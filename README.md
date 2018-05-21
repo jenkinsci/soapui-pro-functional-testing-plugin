@@ -1,46 +1,23 @@
 # SoapUI Pro Functional Testing Plugin
 
-This is the SoapUI Pro Functional Testing Plugin code repository.
+### About
 
-For help developing Jenkins plugins in general, see the [Jenkins plugin tutorial](https://wiki.jenkins-ci.org/display/JENKINS/Plugin+tutorial).
+A SmartBear plugin used to run SoapUI Pro tests from Jenkins builds. 
 
-## To build:
+Read more: [https://wiki.jenkins.io/display/JENKINS/SoapUI+Pro+Functional+Testing+Plugin](https://wiki.jenkins.io/display/JENKINS/SoapUI+Pro+Functional+Testing+Plugin)
 
-```
-mvn clean install
-```
+### Requirements
 
-## To run:
+* The project you want to run must be saved in ReadyAPI version 2.1.0 or later.
+* The Jenkins node where you want to run your test must have ReadyAPI installed with an activated SoapUI Pro license. You can install and activate the license from a Jenkins build. To learn how to do that, see [ReadyAPI documentation](https://support.smartbear.com/readyapi/docs/soapui/running/automating/jenkins.html).
 
-### 1. Export MAVEN_OPTS (first run only, not needed if you use mvnDebug or if you don't want do debug):
+### Configuration
 
-* Unix
-
-```
-export MAVEN_OPTS="-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000,suspend=n"
-```
-
-* Windows
-
-```
-set MAVEN_OPTS=-Xdebug -Xrunjdwp:transport=dt_socket,server=y,address=8000,suspend=n
-```
-
-
-### 2. Run
-
-```
-mvn hpi:run
-```
-
-Or, to select some specific port for the Jenkins server to run on:
-
-```
-mvn hpi:run -Djetty.port=8090
-```
-
-Or, to remote debug without setting `MAVEN_OPTS`.
-
-```
-mvnDebug hpi:run
-```
+The build step has the following settings:  
+	
+* **Path to testrunner** - Specifies the fully-qualified path to the runner file (*testrunner.bat* or *testrunner.sh*). By default, you can find it in the *&lt;ReadyAPI installation&gt;/bin* directory.
+* **Path to SoapUI Pro project** -  Specifies the fully-qualified path to the SoapUI Pro project you want to run.
+* **Test Suite** - Specifies the test suite to run. To run all the test suites of your project, leave the field blank.
+* **Test Case** - Specifies the test case to run. If you leave the field blank, the runner will execute all the test cases of the specified test suite, or, if you have not specified a test suite, all the test cases of your project.
+* **Project Password** - Specifies the encryption password, if you encrypted the entire project or some of its custom properties.
+* **Environment** - Specifies the environment configuration for the test run.
