@@ -97,7 +97,7 @@ public class JenkinsSoapUIProTestRunner extends Builder {
             if (process != null) {
                 try {
                     process.waitFor();
-                    if (build.getResult() != Result.FAILURE) {
+                    if (build.getResult() != Result.FAILURE && ProcessRunner.isReportCreated) {
                         boolean published = new ReportPublisher().publish(build, listener);
                         if (!published) {
                             out.println("JUnit-style report was not published!");
