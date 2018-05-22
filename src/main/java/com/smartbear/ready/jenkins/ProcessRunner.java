@@ -29,6 +29,7 @@ class ProcessRunner {
     private static final String TERMINATION_STRING = "Please enter absolute path of the license file";
     private static final String SH = ".sh";
     private static final String BAT = ".bat";
+    private static final String REPORT_CREATED_DETERMINANT = "Created report at";
     protected static boolean isReportCreated;
     private boolean isSoapUIProProject = false;
 
@@ -100,7 +101,7 @@ class ProcessRunner {
                             process.destroy();
                             return;
                         }
-                        if (s.contains("Created report at")) {
+                        if (s.contains(REPORT_CREATED_DETERMINANT)) {
                             isReportCreated = true;
                         }
                     }
