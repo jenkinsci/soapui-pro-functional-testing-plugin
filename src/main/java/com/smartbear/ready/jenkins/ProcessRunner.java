@@ -30,7 +30,7 @@ class ProcessRunner {
     private static final String SH = ".sh";
     private static final String BAT = ".bat";
     private static final String REPORT_CREATED_DETERMINANT = "Created report at";
-    protected static boolean isReportCreated;
+    private boolean isReportCreated;
     private boolean isSoapUIProProject = false;
 
     Process run(final PrintStream out, final ParameterContainer params, final AbstractBuild build)
@@ -151,6 +151,10 @@ class ProcessRunner {
         } catch (MySAXTerminatorException exp) {
             //nothing to do, expected
         }
+    }
+
+    protected boolean isReportCreated() {
+        return isReportCreated;
     }
 
     private class ReadXmlUpToSpecificElementSaxParser extends DefaultHandler {
