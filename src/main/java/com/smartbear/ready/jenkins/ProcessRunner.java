@@ -2,12 +2,12 @@ package com.smartbear.ready.jenkins;
 
 import hudson.model.AbstractBuild;
 import hudson.model.Result;
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import javax.servlet.ServletException;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -30,6 +30,7 @@ class ProcessRunner {
     private static final String SH = ".sh";
     private static final String BAT = ".bat";
     private static final String REPORT_CREATED_DETERMINANT = "Created report at";
+    private static final String SOAPUI_PRO_TESTRUNNER_DETERMINANT = "com.smartbear.ready.cmd.runner.pro.SoapUIProTestCaseRunner";
     private boolean isReportCreated;
     private boolean isSoapUIProProject = false;
 
@@ -38,6 +39,15 @@ class ProcessRunner {
         List<String> processParameterList = new ArrayList<>();
         String testrunnerFilePath = buildTestRunnerPath(params.getPathToTestrunner());
         if (StringUtils.isNotBlank(testrunnerFilePath) && new File(testrunnerFilePath).exists()) {
+            try {
+                if (!isSoapUIProTestrunner(testrunnerFilePath)) {
+                    out.println("The testrunner file is not correct. Please confirm it's the testrunner for SoapUI Pro. Exiting.");
+                    return null;
+                }
+            } catch (IOException e) {
+                e.printStackTrace(out);
+                return null;
+            }
             processParameterList.add(testrunnerFilePath);
         } else {
             out.println("Failed to load testrunner file [" + testrunnerFilePath + "]");
@@ -126,6 +136,10 @@ class ProcessRunner {
         } else {
             return pathToTestrunnerFile + File.separator + TESTRUNNER_NAME + SH;
         }
+    }
+
+    private boolean isSoapUIProTestrunner(String testrunnerFilePath) throws IOException {
+        return FileUtils.readFileToString(new File(testrunnerFilePath)).contains(SOAPUI_PRO_TESTRUNNER_DETERMINANT);
     }
 
     private void setReportDirectory(String reportDirectoryPath) {
