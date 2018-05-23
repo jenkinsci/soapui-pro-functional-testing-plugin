@@ -71,18 +71,18 @@ public class JenkinsSoapUIProTestRunner extends Builder {
     @Override
     public boolean perform(AbstractBuild build, Launcher launcher, final BuildListener listener) throws AbortException {
         Process process = null;
+        ProcessRunner processRunner = new ProcessRunner();
         final PrintStream out = listener.getLogger();
         try {
-            process = new ProcessRunner()
-                    .run(out, new ParameterContainer.Builder()
-                            .withPathToTestrunner(pathToTestrunner)
-                            .withPathToProjectFile(pathToProjectFile)
-                            .withTestSuite(testSuite)
-                            .withTestCase(testCase)
-                            .withProjectPassword(projectPassword)
-                            .withEnvironment(environment)
-                            .withWorkspace(new File(build.getWorkspace().toURI()))
-                            .build(), build);
+            process = processRunner.run(out, new ParameterContainer.Builder()
+                    .withPathToTestrunner(pathToTestrunner)
+                    .withPathToProjectFile(pathToProjectFile)
+                    .withTestSuite(testSuite)
+                    .withTestCase(testCase)
+                    .withProjectPassword(projectPassword)
+                    .withEnvironment(environment)
+                    .withWorkspace(new File(build.getWorkspace().toURI()))
+                    .build(), build);
             if (process == null) {
                 throw new AbortException("Could not start SoapUI Pro functional testing.");
             }
@@ -97,7 +97,7 @@ public class JenkinsSoapUIProTestRunner extends Builder {
             if (process != null) {
                 try {
                     process.waitFor();
-                    if (build.getResult() != Result.FAILURE) {
+                    if (build.getResult() != Result.FAILURE && processRunner.isReportCreated()) {
                         boolean published = new ReportPublisher().publish(build, listener);
                         if (!published) {
                             out.println("JUnit-style report was not published!");
