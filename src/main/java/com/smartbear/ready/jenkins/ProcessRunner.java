@@ -1,13 +1,17 @@
 package com.smartbear.ready.jenkins;
 
-import hudson.model.AbstractBuild;
+import hudson.Launcher;
+import hudson.Proc;
 import hudson.model.Result;
+import hudson.model.Run;
+import hudson.model.TaskListener;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
+import javax.annotation.Nonnull;
 import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
@@ -23,7 +27,6 @@ import java.util.List;
 class ProcessRunner {
     public static final String READYAPI_REPORT_DIRECTORY = File.separator + "ReadyAPI_report";
     private static final String TESTRUNNER_NAME = "testrunner";
-    private static final String COMPOSITE_PROJECT_SETTINGS_FILE_PATH = File.separator + "settings.xml";
     private static final String LAST_ELEMENT_TO_READ = "con:soapui-project";
     private static final String ATTRIBUTE_TO_CHECK = "updated";
     private static final String TERMINATION_STRING = "Please enter absolute path of the license file";
@@ -34,8 +37,9 @@ class ProcessRunner {
     private boolean isReportCreated;
     private boolean isSoapUIProProject = false;
 
-    Process run(final PrintStream out, final ParameterContainer params, final AbstractBuild build)
-            throws IOException {
+    Proc run(final ParameterContainer params, @Nonnull final Run<?, ?> run, @Nonnull Launcher launcher, @Nonnull TaskListener listener)
+            throws IOException, InterruptedException {
+        final PrintStream out = listener.getLogger();
         List<String> processParameterList = new ArrayList<>();
         String testrunnerFilePath = buildTestRunnerPath(params.getPathToTestrunner());
         if (StringUtils.isNotBlank(testrunnerFilePath) && new File(testrunnerFilePath).exists()) {
@@ -93,12 +97,10 @@ class ProcessRunner {
             return null;
         }
         isReportCreated = false;
-        ProcessBuilder pb = new ProcessBuilder(processParameterList);
-        pb.redirectErrorStream(true);
+        Launcher.ProcStarter processStarter = launcher.launch().cmds(processParameterList).envs(run.getEnvironment(listener)).readStdout().quiet(true);
         out.println("Starting SoapUI Pro functional test.");
-        final Process process = pb.start();
-
-        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getInputStream()));
+        final Proc process = processStarter.start();
+        final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getStdout()));
         new Thread(new Runnable() {
             public void run() {
                 String s;
@@ -107,8 +109,8 @@ class ProcessRunner {
                         out.println(s);
                         if (s.contains(TERMINATION_STRING)) {
                             out.println("No license was found! Exiting.");
-                            build.setResult(Result.FAILURE);
-                            process.destroy();
+                            run.setResult(Result.FAILURE);
+                            process.kill();
                             return;
                         }
                         if (s.contains(REPORT_CREATED_DETERMINANT)) {
@@ -117,6 +119,8 @@ class ProcessRunner {
                     }
                 } catch (IOException e) {
                     e.printStackTrace(out);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
                 }
             }
         }).start();
@@ -150,16 +154,13 @@ class ProcessRunner {
     }
 
     private void checkIfSoapUIProProject(String projectFilePath) throws ParserConfigurationException, SAXException, IOException {
+        //if project is composite, it is SoapUI Pro project also
+        if (new File(projectFilePath).isDirectory()) {
+            isSoapUIProProject = true;
+            return;
+        }
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser saxParser = factory.newSAXParser();
-        //if composite project, check settings.xml file
-        if (new File(projectFilePath).isDirectory()) {
-            projectFilePath = projectFilePath + COMPOSITE_PROJECT_SETTINGS_FILE_PATH;
-            if (!new File(projectFilePath).exists()) {
-                throw new IOException("Missing settings.xml file in the composite project! Can not check if the project " +
-                        "is a SoapUI Pro project. Exiting.");
-            }
-        }
         try {
             saxParser.parse(projectFilePath, new ReadXmlUpToSpecificElementSaxParser(LAST_ELEMENT_TO_READ));
         } catch (MySAXTerminatorException exp) {

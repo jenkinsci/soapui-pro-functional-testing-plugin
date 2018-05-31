@@ -1,6 +1,6 @@
 package com.smartbear.ready.jenkins;
 
-import java.io.File;
+import hudson.FilePath;
 
 public class ParameterContainer {
     private String pathToTestrunner;
@@ -9,7 +9,7 @@ public class ParameterContainer {
     private String testCase;
     private String projectPassword;
     private String environment;
-    private File workspace;
+    private FilePath workspace;
 
     public String getPathToTestrunner() {
         return pathToTestrunner;
@@ -35,7 +35,7 @@ public class ParameterContainer {
         return environment;
     }
 
-    public File getWorkspace() {
+    public FilePath getWorkspace() {
         return workspace;
     }
 
@@ -76,7 +76,7 @@ public class ParameterContainer {
             return this;
         }
 
-        public Builder withWorkspace(File workspace) {
+        public Builder withWorkspace(FilePath workspace) {
             parameterContainer.workspace = workspace;
             return this;
         }
