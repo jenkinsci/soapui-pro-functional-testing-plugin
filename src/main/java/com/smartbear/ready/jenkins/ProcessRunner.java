@@ -18,11 +18,13 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Properties;
 
 class ProcessRunner {
     public static final String READYAPI_REPORT_DIRECTORY = File.separator + "ReadyAPI_report";
@@ -34,6 +36,8 @@ class ProcessRunner {
     private static final String BAT = ".bat";
     private static final String REPORT_CREATED_DETERMINANT = "Created report at";
     private static final String SOAPUI_PRO_TESTRUNNER_DETERMINANT = "com.smartbear.ready.cmd.runner.pro.SoapUIProTestCaseRunner";
+    private static final String DEFAULT_PLUGIN_VERSION = "1.0";
+    private static final String SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO = "SoapUiProFunctionalTestingPluginInfo.properties";
     private boolean isReportCreated;
     private boolean isSoapUIProProject = false;
 
@@ -96,6 +100,12 @@ class ProcessRunner {
             out.println("Failed to load the project file [" + projectFilePath + "]");
             return null;
         }
+        Properties properties = new Properties();
+        properties.load(ProcessRunner.class.getResourceAsStream(SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO));
+        String version = properties.getProperty("version", DEFAULT_PLUGIN_VERSION);
+        //for statistics
+        processParameterList.addAll(Arrays.asList("-q", version));
+
         isReportCreated = false;
         Launcher.ProcStarter processStarter = launcher.launch().cmds(processParameterList).envs(run.getEnvironment(listener)).readStdout().quiet(true);
         out.println("Starting SoapUI Pro functional test.");

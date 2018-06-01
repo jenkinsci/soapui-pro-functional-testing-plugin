@@ -23,6 +23,15 @@
     <version>1.0</version>
     <url>https://wiki.jenkins.io/display/JENKINS/SoapUI+Pro+Functional+Testing+Plugin</url>
 
+    <build>
+        <resources>
+            <resource>
+                <directory>src/main/resources</directory>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
     <dependencies>
         <dependency>
             <groupId>org.jenkins-ci.plugins</groupId>
