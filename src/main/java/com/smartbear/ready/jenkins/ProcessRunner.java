@@ -37,7 +37,7 @@ class ProcessRunner {
     private static final String REPORT_CREATED_DETERMINANT = "Created report at";
     private static final String SOAPUI_PRO_TESTRUNNER_DETERMINANT = "com.smartbear.ready.cmd.runner.pro.SoapUIProTestCaseRunner";
     private static final String DEFAULT_PLUGIN_VERSION = "1.0";
-    private static final String SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO = "SoapUiProFunctionalTestingPluginInfo.properties";
+    private static final String SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO = "/soapUiProFunctionalTestingPluginInfo.properties";
     private boolean isReportCreated;
     private boolean isSoapUIProProject = false;
 
