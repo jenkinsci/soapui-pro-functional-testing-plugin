@@ -1,11 +1,12 @@
 package com.smartbear.ready.jenkins;
 
+import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Proc;
 import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
-import org.apache.commons.io.FileUtils;
+import hudson.remoting.VirtualChannel;
 import org.apache.commons.lang.StringUtils;
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
@@ -18,7 +19,6 @@ import javax.xml.parsers.SAXParserFactory;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -40,13 +40,15 @@ class ProcessRunner {
     private static final String SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO = "/soapUiProFunctionalTestingPluginInfo.properties";
     private boolean isReportCreated;
     private boolean isSoapUIProProject = false;
+    private VirtualChannel channel;
 
     Proc run(final ParameterContainer params, @Nonnull final Run<?, ?> run, @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws IOException, InterruptedException {
         final PrintStream out = listener.getLogger();
         List<String> processParameterList = new ArrayList<>();
+        channel = launcher.getChannel();
         String testrunnerFilePath = buildTestRunnerPath(params.getPathToTestrunner());
-        if (StringUtils.isNotBlank(testrunnerFilePath) && new File(testrunnerFilePath).exists()) {
+        if (StringUtils.isNotBlank(testrunnerFilePath) && new FilePath(channel, testrunnerFilePath).exists()) {
             try {
                 if (!isSoapUIProTestrunner(testrunnerFilePath)) {
                     out.println("The testrunner file is not correct. Please confirm it's the testrunner for SoapUI Pro. Exiting.");
@@ -84,7 +86,7 @@ class ProcessRunner {
         }
 
         String projectFilePath = params.getPathToProjectFile();
-        if (StringUtils.isNotBlank(projectFilePath) && new File(projectFilePath).exists()) {
+        if (StringUtils.isNotBlank(projectFilePath) && new FilePath(channel, projectFilePath).exists()) {
             try {
                 checkIfSoapUIProProject(projectFilePath);
             } catch (Exception e) {
@@ -138,11 +140,11 @@ class ProcessRunner {
         return process;
     }
 
-    private String buildTestRunnerPath(String pathToTestrunnerFile) {
+    private String buildTestRunnerPath(String pathToTestrunnerFile) throws IOException, InterruptedException {
         if (!StringUtils.isNotBlank(pathToTestrunnerFile)) {
             return "";
         }
-        if (new File(pathToTestrunnerFile).isFile()) {
+        if (!new FilePath(channel, pathToTestrunnerFile).isDirectory()) {
             return pathToTestrunnerFile;
         }
         if (System.getProperty("os.name").contains("Windows")) {
@@ -152,20 +154,20 @@ class ProcessRunner {
         }
     }
 
-    private boolean isSoapUIProTestrunner(String testrunnerFilePath) throws IOException {
-        return FileUtils.readFileToString(new File(testrunnerFilePath)).contains(SOAPUI_PRO_TESTRUNNER_DETERMINANT);
+    private boolean isSoapUIProTestrunner(String testrunnerFilePath) throws IOException, InterruptedException {
+        return new FilePath(channel, testrunnerFilePath).readToString().contains(SOAPUI_PRO_TESTRUNNER_DETERMINANT);
     }
 
-    private void setReportDirectory(String reportDirectoryPath) {
-        File reportDirectoryFile = new File(reportDirectoryPath);
+    private void setReportDirectory(String reportDirectoryPath) throws IOException, InterruptedException {
+        FilePath reportDirectoryFile = new FilePath(channel, reportDirectoryPath);
         if (!reportDirectoryFile.exists()) {
-            reportDirectoryFile.mkdir();
+            reportDirectoryFile.mkdirs();
         }
     }
 
-    private void checkIfSoapUIProProject(String projectFilePath) throws ParserConfigurationException, SAXException, IOException {
+    private void checkIfSoapUIProProject(String projectFilePath) throws ParserConfigurationException, SAXException, IOException, InterruptedException {
         //if project is composite, it is SoapUI Pro project also
-        if (new File(projectFilePath).isDirectory()) {
+        if (new FilePath(channel, projectFilePath).isDirectory()) {
             isSoapUIProProject = true;
             return;
         }

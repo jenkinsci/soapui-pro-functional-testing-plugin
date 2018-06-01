@@ -74,7 +74,6 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
 
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
-
         Proc process = null;
         ProcessRunner processRunner = new ProcessRunner();
         final PrintStream out = listener.getLogger();
