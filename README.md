@@ -1,6 +1,3 @@
-# This repository is kept just in case. The real location is here https://github.com/jenkinsci/soapui-pro-functional-testing-plugin. It's a Jenkins requirement. Thus no changes make sense to do here.
-
-
 # SoapUI Pro Functional Testing Plugin
 
 ### About
