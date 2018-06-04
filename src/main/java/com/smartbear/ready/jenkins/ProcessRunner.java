@@ -38,6 +38,9 @@ class ProcessRunner {
     private static final String SOAPUI_PRO_TESTRUNNER_DETERMINANT = "com.smartbear.ready.cmd.runner.pro.SoapUIProTestCaseRunner";
     private static final String DEFAULT_PLUGIN_VERSION = "1.0";
     private static final String SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO = "/soapUiProFunctionalTestingPluginInfo.properties";
+    private static final String TESTRUNNER_VERSION_DETERMINANT = "ready-api-ui-";
+    private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_FIRST_NUMBER = 2;
+    private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_SECOND_NUMBER = 4;
     private boolean isReportCreated;
     private boolean isSoapUIProProject = false;
     private VirtualChannel channel;
@@ -102,11 +105,13 @@ class ProcessRunner {
             out.println("Failed to load the project file [" + projectFilePath + "]");
             return null;
         }
-        Properties properties = new Properties();
-        properties.load(ProcessRunner.class.getResourceAsStream(SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO));
-        String version = properties.getProperty("version", DEFAULT_PLUGIN_VERSION);
-        //for statistics
-        processParameterList.addAll(Arrays.asList("-q", version));
+
+        if (shouldSendAnalytics(testrunnerFilePath)) {
+            Properties properties = new Properties();
+            properties.load(ProcessRunner.class.getResourceAsStream(SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO));
+            String version = properties.getProperty("version", DEFAULT_PLUGIN_VERSION);
+            processParameterList.addAll(Arrays.asList("-q", version));
+        }
 
         isReportCreated = false;
         Launcher.ProcStarter processStarter = launcher.launch().cmds(processParameterList).envs(run.getEnvironment(listener)).readStdout().quiet(true);
@@ -178,6 +183,21 @@ class ProcessRunner {
         } catch (MySAXTerminatorException exp) {
             //nothing to do, expected
         }
+    }
+
+    private boolean shouldSendAnalytics(String testrunnerFilePath) throws IOException, InterruptedException {
+        String testrunnerFileToString = new FilePath(channel, testrunnerFilePath).readToString();
+        if (testrunnerFileToString.contains(TESTRUNNER_VERSION_DETERMINANT)) {
+            int startFromIndex = testrunnerFileToString.indexOf(TESTRUNNER_VERSION_DETERMINANT) + TESTRUNNER_VERSION_DETERMINANT.length();
+            int firstVersionNumber = Character.getNumericValue(testrunnerFileToString.charAt(startFromIndex));
+            if (firstVersionNumber >= TESTRUNNER_VERSION_FOR_ANALYTICS_FIRST_NUMBER) {
+                int secondVersionIndex = Character.getNumericValue(testrunnerFileToString.charAt(startFromIndex + 2));
+                if (secondVersionIndex >= TESTRUNNER_VERSION_FOR_ANALYTICS_SECOND_NUMBER) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 
     protected boolean isReportCreated() {
