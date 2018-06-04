@@ -13,7 +13,6 @@ import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
 import javax.annotation.Nonnull;
-import javax.xml.parsers.ParserConfigurationException;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.BufferedReader;
@@ -51,7 +50,8 @@ class ProcessRunner {
         List<String> processParameterList = new ArrayList<>();
         channel = launcher.getChannel();
         String testrunnerFilePath = buildTestRunnerPath(params.getPathToTestrunner());
-        if (StringUtils.isNotBlank(testrunnerFilePath) && new FilePath(channel, testrunnerFilePath).exists()) {
+        FilePath testrunnerFile = new FilePath(channel, testrunnerFilePath);
+        if (StringUtils.isNotBlank(testrunnerFilePath) && testrunnerFile.exists() && testrunnerFile.length() != 0) {
             try {
                 if (!isSoapUIProTestrunner(testrunnerFilePath)) {
                     out.println("The testrunner file is not correct. Please confirm it's the testrunner for SoapUI Pro. Exiting.");
@@ -89,9 +89,10 @@ class ProcessRunner {
         }
 
         String projectFilePath = params.getPathToProjectFile();
-        if (StringUtils.isNotBlank(projectFilePath) && new FilePath(channel, projectFilePath).exists()) {
+        FilePath projectFile = new FilePath(channel, projectFilePath);
+        if (StringUtils.isNotBlank(projectFilePath) && projectFile.exists() && projectFile.length() != 0) {
             try {
-                checkIfSoapUIProProject(projectFilePath);
+                checkIfSoapUIProProject(projectFile);
             } catch (Exception e) {
                 e.printStackTrace(out);
                 return null;
@@ -170,16 +171,16 @@ class ProcessRunner {
         }
     }
 
-    private void checkIfSoapUIProProject(String projectFilePath) throws ParserConfigurationException, SAXException, IOException, InterruptedException {
+    private void checkIfSoapUIProProject(FilePath projectFile) throws Exception {
         //if project is composite, it is SoapUI Pro project also
-        if (new FilePath(channel, projectFilePath).isDirectory()) {
+        if (projectFile.isDirectory()) {
             isSoapUIProProject = true;
             return;
         }
         SAXParserFactory factory = SAXParserFactory.newInstance();
         SAXParser saxParser = factory.newSAXParser();
         try {
-            saxParser.parse(projectFilePath, new ReadXmlUpToSpecificElementSaxParser(LAST_ELEMENT_TO_READ));
+            saxParser.parse(projectFile.read(), new ReadXmlUpToSpecificElementSaxParser(LAST_ELEMENT_TO_READ));
         } catch (MySAXTerminatorException exp) {
             //nothing to do, expected
         }
