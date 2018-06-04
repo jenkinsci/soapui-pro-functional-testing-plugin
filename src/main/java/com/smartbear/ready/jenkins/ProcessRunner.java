@@ -53,7 +53,7 @@ class ProcessRunner {
         FilePath testrunnerFile = new FilePath(channel, testrunnerFilePath);
         if (StringUtils.isNotBlank(testrunnerFilePath) && testrunnerFile.exists() && testrunnerFile.length() != 0) {
             try {
-                if (!isSoapUIProTestrunner(testrunnerFilePath)) {
+                if (!isSoapUIProTestrunner(testrunnerFile)) {
                     out.println("The testrunner file is not correct. Please confirm it's the testrunner for SoapUI Pro. Exiting.");
                     return null;
                 }
@@ -107,7 +107,7 @@ class ProcessRunner {
             return null;
         }
 
-        if (shouldSendAnalytics(testrunnerFilePath)) {
+        if (shouldSendAnalytics(testrunnerFile)) {
             Properties properties = new Properties();
             properties.load(ProcessRunner.class.getResourceAsStream(SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO));
             String version = properties.getProperty("version", DEFAULT_PLUGIN_VERSION);
@@ -160,8 +160,8 @@ class ProcessRunner {
         }
     }
 
-    private boolean isSoapUIProTestrunner(String testrunnerFilePath) throws IOException, InterruptedException {
-        return new FilePath(channel, testrunnerFilePath).readToString().contains(SOAPUI_PRO_TESTRUNNER_DETERMINANT);
+    private boolean isSoapUIProTestrunner(FilePath testrunnerFile) throws IOException, InterruptedException {
+        return testrunnerFile.readToString().contains(SOAPUI_PRO_TESTRUNNER_DETERMINANT);
     }
 
     private void setReportDirectory(String reportDirectoryPath) throws IOException, InterruptedException {
@@ -186,8 +186,8 @@ class ProcessRunner {
         }
     }
 
-    private boolean shouldSendAnalytics(String testrunnerFilePath) throws IOException, InterruptedException {
-        String testrunnerFileToString = new FilePath(channel, testrunnerFilePath).readToString();
+    private boolean shouldSendAnalytics(FilePath testrunnerFile) throws IOException, InterruptedException {
+        String testrunnerFileToString = testrunnerFile.readToString();
         if (testrunnerFileToString.contains(TESTRUNNER_VERSION_DETERMINANT)) {
             int startFromIndex = testrunnerFileToString.indexOf(TESTRUNNER_VERSION_DETERMINANT) + TESTRUNNER_VERSION_DETERMINANT.length();
             int firstVersionNumber = Character.getNumericValue(testrunnerFileToString.charAt(startFromIndex));
