@@ -1,7 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0"
-         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
@@ -19,7 +17,7 @@
     <artifactId>soapui-pro-functional-testing</artifactId>
     <packaging>hpi</packaging>
     <name>SoapUI Pro Functional Testing Plugin</name>
-    <version>1.0-SNAPSHOT</version>
+    <version>1.0</version>
     <url>https://wiki.jenkins.io/display/JENKINS/SoapUI+Pro+Functional+Testing+Plugin</url>
     <licenses>
         <license>
@@ -49,7 +47,7 @@
         <connection>scm:git:ssh://github.com/jenkinsci/soapui-pro-functional-testing-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/soapui-pro-functional-testing-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/soapui-pro-functional-testing-plugin</url>
-        <tag>HEAD</tag>
+        <tag>soapui-pro-functional-testing-1.0</tag>
     </scm>
 
     <developers>
