@@ -44,7 +44,7 @@
     </dependencies>
 
     <scm>
-        <connection>scm:git:ssh://github.com/jenkinsci/soapui-pro-functional-testing-plugin.git</connection>
+        <connection>scm:git:ssh://git@github.com/jenkinsci/soapui-pro-functional-testing-plugin.git</connection>
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/soapui-pro-functional-testing-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/soapui-pro-functional-testing-plugin</url>
         <tag>soapui-pro-functional-testing-1.0</tag>
