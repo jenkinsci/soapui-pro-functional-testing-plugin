@@ -5,8 +5,8 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Proc;
+import hudson.console.ModelHyperlinkNote;
 import hudson.model.AbstractProject;
-import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
@@ -21,6 +21,7 @@ import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
@@ -101,10 +102,28 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
             if (process != null) {
                 try {
                     process.join();
-                    if (run.getResult() != Result.FAILURE && processRunner.isReportCreated()) {
-                        boolean published = new ReportPublisher().publish(run, listener, workspace);
+                    if (processRunner.isReportCreated()) {
+                        boolean published = new JUnitReportPublisher().publish(run, listener, workspace);
                         if (!published) {
                             out.println("JUnit-style report was not published!");
+                        }
+                    }
+
+                    if (processRunner.isPrintableReportCreated()) {
+                        String printableReportName = processRunner.getPrintableReportName();
+
+                        FilePath printableReportFileOnSlave = new FilePath(launcher.getChannel(), workspace +
+                                ProcessRunner.READYAPI_REPORT_DIRECTORY + processRunner.getPrintableReportPath() + printableReportName);
+                        File printableReportFileOnMaster = new File(run.getRootDir().getAbsolutePath() +
+                                File.separator + printableReportName);
+
+                        if (copyReportToBuildDir(printableReportFileOnSlave, new FilePath(printableReportFileOnMaster), listener)) {
+                            boolean printableReportPublished = new PrintableReportPublisher().publish(run, printableReportFileOnMaster, listener);
+                            if (printableReportPublished) {
+                                addPrintableReportLinkToConsoleOutput(out, run, printableReportName);
+                            } else {
+                                out.println("Printable report was not published!");
+                            }
                         }
                     }
                 } catch (Exception e) {
@@ -113,6 +132,23 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
             }
         }
 
+    }
+
+    private boolean copyReportToBuildDir(FilePath fromFile, FilePath toFile, TaskListener listener) {
+        try {
+            if (fromFile.exists()) {
+                toFile.copyFrom(fromFile);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace(listener.getLogger());
+        }
+        return false;
+    }
+
+    private void addPrintableReportLinkToConsoleOutput(PrintStream out, Run<?, ?> run, String printableReportName) {
+        String printableReportLink = "/" + run.getUrl() + SoapUIProTestResultsAction.PLUGIN_NAME + "/dynamic/" + printableReportName;
+        out.println(ModelHyperlinkNote.encodeTo(printableReportLink, "Click here to view detailed report"));
     }
 
     @Override
