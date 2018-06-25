@@ -27,6 +27,7 @@ import java.util.Properties;
 
 class ProcessRunner {
     public static final String READYAPI_REPORT_DIRECTORY = File.separator + "ReadyAPI_report";
+    public static final String REPORT_FORMAT = "PDF";
     private static final String TESTRUNNER_NAME = "testrunner";
     private static final String LAST_ELEMENT_TO_READ = "con:soapui-project";
     private static final String ATTRIBUTE_TO_CHECK = "updated";
@@ -38,11 +39,19 @@ class ProcessRunner {
     private static final String DEFAULT_PLUGIN_VERSION = "1.0";
     private static final String SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO = "/soapUiProFunctionalTestingPluginInfo.properties";
     private static final String TESTRUNNER_VERSION_DETERMINANT = "ready-api-ui-";
+    private static final String PROJECT_REPORT = "Project Report";
+    private static final String TESTSUITE_REPORT = "TestSuite Report";
+    private static final String TESTCASE_REPORT = "Test Case Report";
+    private static final String FOLDER_NAME_SEPARATOR = "-";
     private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_FIRST_NUMBER = 2;
     private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_SECOND_NUMBER = 4;
+    private String PRINTABLE_REPORT_CREATED_DETERMINATION = "Created report [%s]";
     private boolean isReportCreated;
+    private boolean isPrintableReportCreated;
     private boolean isSoapUIProProject = false;
     private VirtualChannel channel;
+    private String printableReportPath;
+    private String printableReportName;
 
     Proc run(final ParameterContainer params, @Nonnull final Run<?, ?> run, @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws IOException, InterruptedException {
@@ -74,12 +83,30 @@ class ProcessRunner {
         processParameterList.add("-r");
         processParameterList.add("-j");
         processParameterList.add("-J");
-
-        if (StringUtils.isNotBlank(params.getTestSuite())) {
-            processParameterList.addAll(Arrays.asList("-s", params.getTestSuite()));
+        processParameterList.addAll(Arrays.asList("-F", REPORT_FORMAT));
+        boolean isPrintableReportTypeSet = false;
+        String testSuite = params.getTestSuite();
+        String testCase = params.getTestCase();
+        if (StringUtils.isNotBlank(testCase)) {
+            if (StringUtils.isNotBlank(testSuite)) {
+                processParameterList.addAll(Arrays.asList("-c", testCase));
+                processParameterList.addAll(Arrays.asList("-R", TESTCASE_REPORT));
+                setPrintableReportParams(File.separator + getTestSuiteFolderName(testSuite) + File.separator +
+                        getTestCaseFolderName(testCase) + File.separator, TESTCASE_REPORT);
+                isPrintableReportTypeSet = true;
+            } else {
+                out.println("Enter a testsuite for the specified testcase. Exiting.");
+                return null;
+            }
         }
-        if (StringUtils.isNotBlank(params.getTestCase())) {
-            processParameterList.addAll(Arrays.asList("-c", params.getTestCase()));
+        if (StringUtils.isNotBlank(testSuite)) {
+            processParameterList.addAll(Arrays.asList("-s", testSuite));
+            if (!isPrintableReportTypeSet) {
+                processParameterList.addAll(Arrays.asList("-R", TESTSUITE_REPORT));
+                setPrintableReportParams(File.separator + getTestSuiteFolderName(testSuite) + File.separator,
+                        TESTSUITE_REPORT);
+                isPrintableReportTypeSet = true;
+            }
         }
         if (StringUtils.isNotBlank(params.getProjectPassword())) {
             processParameterList.addAll(Arrays.asList("-x", params.getProjectPassword()));
@@ -107,6 +134,12 @@ class ProcessRunner {
             return null;
         }
 
+        if (!isPrintableReportTypeSet) {
+            processParameterList.addAll(Arrays.asList("-R", PROJECT_REPORT));
+            setPrintableReportParams(File.separator, PROJECT_REPORT);
+            isPrintableReportTypeSet = true;
+        }
+
         if (shouldSendAnalytics(testrunnerFile)) {
             Properties properties = new Properties();
             properties.load(ProcessRunner.class.getResourceAsStream(SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO));
@@ -115,8 +148,10 @@ class ProcessRunner {
         }
 
         isReportCreated = false;
+        isPrintableReportCreated = false;
         Launcher.ProcStarter processStarter = launcher.launch().cmds(processParameterList).envs(run.getEnvironment(listener)).readStdout().quiet(true);
         out.println("Starting SoapUI Pro functional test.");
+
         final Proc process = processStarter.start();
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getStdout()));
         new Thread(new Runnable() {
@@ -134,11 +169,12 @@ class ProcessRunner {
                         if (s.contains(REPORT_CREATED_DETERMINANT)) {
                             isReportCreated = true;
                         }
+                        if (s.contains(PRINTABLE_REPORT_CREATED_DETERMINATION)) {
+                            isPrintableReportCreated = true;
+                        }
                     }
-                } catch (IOException e) {
+                } catch (IOException | InterruptedException e) {
                     e.printStackTrace(out);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
                 }
             }
         }).start();
@@ -201,8 +237,38 @@ class ProcessRunner {
         return false;
     }
 
+    private void setPrintableReportParams(String printableReportPath, String printableReportType) {
+        this.printableReportPath = printableReportPath;
+        this.printableReportName = printableReportType + "." + REPORT_FORMAT.toLowerCase();
+        PRINTABLE_REPORT_CREATED_DETERMINATION = String.format(PRINTABLE_REPORT_CREATED_DETERMINATION, printableReportType);
+    }
+
+    //strange folder name creation in ReadyAPI
+    //TODO: make good folder name for test suite and test case
+    private String getTestSuiteFolderName(String testSuite) {
+        return testSuite.replaceAll("\\\\", "").replaceAll("/", "")
+                .replaceAll("\\.", "").replaceAll("\\s", FOLDER_NAME_SEPARATOR);
+    }
+
+    private String getTestCaseFolderName(String testCase) {
+        return testCase.replaceAll("\\\\", "").replaceAll("/", "")
+                .replaceAll("\\.", "").replaceAll("\\s", FOLDER_NAME_SEPARATOR);
+    }
+
     protected boolean isReportCreated() {
         return isReportCreated;
+    }
+
+    protected boolean isPrintableReportCreated() {
+        return isPrintableReportCreated;
+    }
+
+    protected String getPrintableReportName() {
+        return this.printableReportName;
+    }
+
+    protected String getPrintableReportPath() {
+        return this.printableReportPath;
     }
 
     private class ReadXmlUpToSpecificElementSaxParser extends DefaultHandler {

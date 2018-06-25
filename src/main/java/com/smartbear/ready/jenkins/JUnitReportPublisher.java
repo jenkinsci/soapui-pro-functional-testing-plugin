@@ -9,7 +9,7 @@ import hudson.tasks.junit.TestResultAction;
 import javax.annotation.Nonnull;
 import java.io.File;
 
-public class ReportPublisher {
+public class JUnitReportPublisher {
 
     boolean publish(@Nonnull Run<?, ?> run, TaskListener listener, @Nonnull FilePath workspace) {
         try {
