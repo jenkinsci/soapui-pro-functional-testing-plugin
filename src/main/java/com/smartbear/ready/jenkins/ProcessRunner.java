@@ -42,7 +42,7 @@ class ProcessRunner {
     private static final String PROJECT_REPORT = "Project Report";
     private static final String TESTSUITE_REPORT = "TestSuite Report";
     private static final String TESTCASE_REPORT = "Test Case Report";
-    private static final String FOLDER_NAME_SEPARATOR = "-";
+    private static final char FOLDER_NAME_SEPARATOR = '-';
     private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_FIRST_NUMBER = 2;
     private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_SECOND_NUMBER = 4;
     private String PRINTABLE_REPORT_CREATED_DETERMINATION = "Created report [%s]";
@@ -91,8 +91,8 @@ class ProcessRunner {
             if (StringUtils.isNotBlank(testSuite)) {
                 processParameterList.addAll(Arrays.asList("-c", testCase));
                 processParameterList.addAll(Arrays.asList("-R", TESTCASE_REPORT));
-                setPrintableReportParams(File.separator + getTestSuiteFolderName(testSuite) + File.separator +
-                        getTestCaseFolderName(testCase) + File.separator, TESTCASE_REPORT);
+                setPrintableReportParams(File.separator + createFolderName(testSuite) + File.separator +
+                        createFolderName(testCase) + File.separator, TESTCASE_REPORT);
                 isPrintableReportTypeSet = true;
             } else {
                 out.println("Enter a testsuite for the specified testcase. Exiting.");
@@ -103,7 +103,7 @@ class ProcessRunner {
             processParameterList.addAll(Arrays.asList("-s", testSuite));
             if (!isPrintableReportTypeSet) {
                 processParameterList.addAll(Arrays.asList("-R", TESTSUITE_REPORT));
-                setPrintableReportParams(File.separator + getTestSuiteFolderName(testSuite) + File.separator,
+                setPrintableReportParams(File.separator + createFolderName(testSuite) + File.separator,
                         TESTSUITE_REPORT);
                 isPrintableReportTypeSet = true;
             }
@@ -243,16 +243,22 @@ class ProcessRunner {
         PRINTABLE_REPORT_CREATED_DETERMINATION = String.format(PRINTABLE_REPORT_CREATED_DETERMINATION, printableReportType);
     }
 
-    //strange folder name creation in ReadyAPI
-    //TODO: make good folder name for test suite and test case
-    private String getTestSuiteFolderName(String testSuite) {
-        return testSuite.replaceAll("\\\\", "").replaceAll("/", "")
-                .replaceAll("\\.", "").replaceAll("\\s", FOLDER_NAME_SEPARATOR);
-    }
+    private static String createFolderName(String str) {
+        StringBuilder result = new StringBuilder();
 
-    private String getTestCaseFolderName(String testCase) {
-        return testCase.replaceAll("\\\\", "").replaceAll("/", "")
-                .replaceAll("\\.", "").replaceAll("\\s", FOLDER_NAME_SEPARATOR);
+        for (int c = 0; c < str.length(); c++) {
+            char ch = str.charAt(c);
+
+            if (Character.isWhitespace(ch)) {
+                result.append(FOLDER_NAME_SEPARATOR);
+            } else if (Character.isLetterOrDigit(ch)) {
+                result.append(ch);
+            } else if (ch == FOLDER_NAME_SEPARATOR) {
+                result.append(ch);
+            }
+        }
+
+        return result.toString();
     }
 
     protected boolean isReportCreated() {
