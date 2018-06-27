@@ -7,6 +7,7 @@ import hudson.Launcher;
 import hudson.Proc;
 import hudson.console.ModelHyperlinkNote;
 import hudson.model.AbstractProject;
+import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
@@ -90,48 +91,46 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .build(), run, launcher, listener);
             if (process == null) {
                 throw new AbortException("Could not start SoapUI Pro functional testing.");
+            } else {
+
+                if (process.join() != 0) {
+                    run.setResult(Result.FAILURE);
+                }
+                if (processRunner.isReportCreated()) {
+                    boolean published = new JUnitReportPublisher().publish(run, listener, workspace);
+                    if (!published) {
+                        out.println("JUnit-style report was not published!");
+                    }
+                }
+
+                if (processRunner.isPrintableReportCreated()) {
+                    String printableReportName = processRunner.getPrintableReportName();
+
+                    FilePath printableReportFileOnSlave = new FilePath(launcher.getChannel(), workspace +
+                            ProcessRunner.READYAPI_REPORT_DIRECTORY + processRunner.getPrintableReportPath() + printableReportName);
+                    File printableReportFileOnMaster = new File(run.getRootDir().getAbsolutePath() +
+                            File.separator + printableReportName);
+
+                    if (copyReportToBuildDir(printableReportFileOnSlave, new FilePath(printableReportFileOnMaster), listener)) {
+                        boolean printableReportPublished = new PrintableReportPublisher().publish(run, printableReportFileOnMaster, listener);
+                        if (printableReportPublished) {
+                            addPrintableReportLinkToConsoleOutput(out, run, printableReportName);
+                        } else {
+                            out.println("Printable report was not published!");
+                        }
+                    }
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace(out);
-            if (process != null) {
-                process.kill();
-            }
             throw new AbortException("Could not start SoapUI Pro functional testing.");
 
         } finally {
             if (process != null) {
-                try {
-                    process.join();
-                    if (processRunner.isReportCreated()) {
-                        boolean published = new JUnitReportPublisher().publish(run, listener, workspace);
-                        if (!published) {
-                            out.println("JUnit-style report was not published!");
-                        }
-                    }
-
-                    if (processRunner.isPrintableReportCreated()) {
-                        String printableReportName = processRunner.getPrintableReportName();
-
-                        FilePath printableReportFileOnSlave = new FilePath(launcher.getChannel(), workspace +
-                                ProcessRunner.READYAPI_REPORT_DIRECTORY + processRunner.getPrintableReportPath() + printableReportName);
-                        File printableReportFileOnMaster = new File(run.getRootDir().getAbsolutePath() +
-                                File.separator + printableReportName);
-
-                        if (copyReportToBuildDir(printableReportFileOnSlave, new FilePath(printableReportFileOnMaster), listener)) {
-                            boolean printableReportPublished = new PrintableReportPublisher().publish(run, printableReportFileOnMaster, listener);
-                            if (printableReportPublished) {
-                                addPrintableReportLinkToConsoleOutput(out, run, printableReportName);
-                            } else {
-                                out.println("Printable report was not published!");
-                            }
-                        }
-                    }
-                } catch (Exception e) {
-                    throw new AbortException("Could not start SoapUI Pro functional testing.");
-                }
+                process.kill();
             }
         }
-
     }
 
     private boolean copyReportToBuildDir(FilePath fromFile, FilePath toFile, TaskListener listener) {
