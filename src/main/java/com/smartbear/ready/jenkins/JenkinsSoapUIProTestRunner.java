@@ -96,8 +96,9 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                 if (process.join() != 0) {
                     run.setResult(Result.FAILURE);
                 }
+
                 if (processRunner.isReportCreated()) {
-                    boolean published = new JUnitReportPublisher().publish(run, listener, workspace);
+                    boolean published = new JUnitReportPublisher().publish(run, listener, workspace, launcher);
                     if (!published) {
                         out.println("JUnit-style report was not published!");
                     }
