@@ -182,7 +182,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
 
         public FormValidation doCheckTestSuite(@QueryParameter String value, @QueryParameter String testCase) {
             if (value.length() == 0 && testCase.length() != 0) {
-                return FormValidation.error("Please, enter a testsuite for the specified testcase");
+                return FormValidation.error("Please, enter a test suite for the specified test case");
             }
             return FormValidation.ok();
         }
