@@ -98,7 +98,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                 }
 
                 if (processRunner.isReportCreated()) {
-                    boolean published = new JUnitReportPublisher().publish(run, listener, workspace, launcher);
+                    boolean published = new JUnitReportPublisher().publish(run, listener, launcher, processRunner.getReportsFolderPath());
                     if (!published) {
                         out.println("JUnit-style report was not published!");
                     }
@@ -107,8 +107,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                 if (processRunner.isPrintableReportCreated()) {
                     String printableReportName = processRunner.getPrintableReportName();
 
-                    FilePath printableReportFileOnSlave = new FilePath(launcher.getChannel(), workspace +
-                            ProcessRunner.READYAPI_REPORT_DIRECTORY + processRunner.getPrintableReportPath() + printableReportName);
+                    FilePath printableReportFileOnSlave = new FilePath(launcher.getChannel(), processRunner.getReportsFolderPath() +
+                            processRunner.getPrintableReportPath() + printableReportName);
                     File printableReportFileOnMaster = new File(run.getRootDir().getAbsolutePath() +
                             File.separator + printableReportName);
 
