@@ -16,7 +16,6 @@ import javax.annotation.Nonnull;
 import javax.xml.parsers.SAXParser;
 import javax.xml.parsers.SAXParserFactory;
 import java.io.BufferedReader;
-import java.io.File;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
@@ -26,7 +25,7 @@ import java.util.List;
 import java.util.Properties;
 
 class ProcessRunner {
-    public static final String READYAPI_REPORT_DIRECTORY = File.separator + "ReadyAPI_report";
+    public static final String READYAPI_REPORT_DIRECTORY = "ReadyAPI_report";
     public static final String REPORT_FORMAT = "PDF";
     private static final String TESTRUNNER_NAME = "testrunner";
     private static final String LAST_ELEMENT_TO_READ = "con:soapui-project";
@@ -45,6 +44,7 @@ class ProcessRunner {
     private static final char FOLDER_NAME_SEPARATOR = '-';
     private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_FIRST_NUMBER = 2;
     private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_SECOND_NUMBER = 4;
+    private String slaveFileSeparator;
     private String PRINTABLE_REPORT_CREATED_DETERMINATION = "Created report [%s]";
     private boolean isReportCreated;
     private boolean isPrintableReportCreated;
@@ -52,13 +52,15 @@ class ProcessRunner {
     private VirtualChannel channel;
     private String printableReportPath;
     private String printableReportName;
+    private String reportsFolderPath;
 
     Proc run(final ParameterContainer params, @Nonnull final Run<?, ?> run, @Nonnull Launcher launcher, @Nonnull TaskListener listener)
             throws IOException, InterruptedException {
         final PrintStream out = listener.getLogger();
         List<String> processParameterList = new ArrayList<>();
         channel = launcher.getChannel();
-        String testrunnerFilePath = buildTestRunnerPath(params.getPathToTestrunner());
+        setSlaveFileSeparator(launcher);
+        String testrunnerFilePath = buildTestRunnerPath(params.getPathToTestrunner(), launcher);
         FilePath testrunnerFile = new FilePath(channel, testrunnerFilePath);
         if (StringUtils.isNotBlank(testrunnerFilePath) && testrunnerFile.exists() && testrunnerFile.length() != 0) {
             try {
@@ -76,9 +78,9 @@ class ProcessRunner {
             return null;
         }
 
-        String reportDirectoryPath = params.getWorkspace() + READYAPI_REPORT_DIRECTORY;
-        setReportDirectory(reportDirectoryPath);
-        processParameterList.addAll(Arrays.asList("-f", reportDirectoryPath));
+        reportsFolderPath = params.getWorkspace() + slaveFileSeparator + READYAPI_REPORT_DIRECTORY + slaveFileSeparator;
+        setReportDirectory(reportsFolderPath);
+        processParameterList.addAll(Arrays.asList("-f", reportsFolderPath));
 
         processParameterList.add("-r");
         processParameterList.add("-j");
@@ -91,8 +93,8 @@ class ProcessRunner {
             if (StringUtils.isNotBlank(testSuite)) {
                 processParameterList.addAll(Arrays.asList("-c", testCase));
                 processParameterList.addAll(Arrays.asList("-R", TESTCASE_REPORT));
-                setPrintableReportParams(File.separator + createFolderName(testSuite) + File.separator +
-                        createFolderName(testCase) + File.separator, TESTCASE_REPORT);
+                setPrintableReportParams(createFolderName(testSuite) + slaveFileSeparator +
+                        createFolderName(testCase) + slaveFileSeparator, TESTCASE_REPORT);
                 isPrintableReportTypeSet = true;
             } else {
                 out.println("Enter a testsuite for the specified testcase. Exiting.");
@@ -103,7 +105,7 @@ class ProcessRunner {
             processParameterList.addAll(Arrays.asList("-s", testSuite));
             if (!isPrintableReportTypeSet) {
                 processParameterList.addAll(Arrays.asList("-R", TESTSUITE_REPORT));
-                setPrintableReportParams(File.separator + createFolderName(testSuite) + File.separator,
+                setPrintableReportParams(createFolderName(testSuite) + slaveFileSeparator,
                         TESTSUITE_REPORT);
                 isPrintableReportTypeSet = true;
             }
@@ -136,7 +138,7 @@ class ProcessRunner {
 
         if (!isPrintableReportTypeSet) {
             processParameterList.addAll(Arrays.asList("-R", PROJECT_REPORT));
-            setPrintableReportParams(File.separator, PROJECT_REPORT);
+            setPrintableReportParams("", PROJECT_REPORT);
             isPrintableReportTypeSet = true;
         }
 
@@ -182,17 +184,25 @@ class ProcessRunner {
         return process;
     }
 
-    private String buildTestRunnerPath(String pathToTestrunnerFile) throws IOException, InterruptedException {
+    public String getReportsFolderPath() {
+        return reportsFolderPath;
+    }
+
+    private void setSlaveFileSeparator(Launcher launcher) {
+        slaveFileSeparator = launcher.isUnix() ? "/" : "\\";
+    }
+
+    private String buildTestRunnerPath(String pathToTestrunnerFile, Launcher launcher) throws IOException, InterruptedException {
         if (!StringUtils.isNotBlank(pathToTestrunnerFile)) {
             return "";
         }
         if (!new FilePath(channel, pathToTestrunnerFile).isDirectory()) {
             return pathToTestrunnerFile;
         }
-        if (System.getProperty("os.name").contains("Windows")) {
-            return pathToTestrunnerFile + File.separator + TESTRUNNER_NAME + BAT;
+        if (launcher.isUnix()) {
+            return pathToTestrunnerFile + slaveFileSeparator + TESTRUNNER_NAME + SH;
         } else {
-            return pathToTestrunnerFile + File.separator + TESTRUNNER_NAME + SH;
+            return pathToTestrunnerFile + slaveFileSeparator + TESTRUNNER_NAME + BAT;
         }
     }
 

@@ -11,12 +11,12 @@ import javax.annotation.Nonnull;
 import java.io.File;
 
 public class JUnitReportPublisher {
-    private static final String JUNIT_REPORT_NAME = File.separator + "report.xml";
+    private static final String JUNIT_REPORT_NAME = "report.xml";
 
-    boolean publish(@Nonnull Run<?, ?> run, TaskListener listener, @Nonnull FilePath workspace, @Nonnull Launcher launcher) {
-        File junitReportTempFileOnMaster = new File(run.getRootDir().getAbsolutePath() + JUNIT_REPORT_NAME);
+    boolean publish(@Nonnull Run<?, ?> run, TaskListener listener, @Nonnull Launcher launcher, String reportsFolderPath) {
+        File junitReportTempFileOnMaster = new File(run.getRootDir().getAbsolutePath() + File.separator + JUNIT_REPORT_NAME);
         try {
-            FilePath junitReportFileOnSlave = new FilePath(launcher.getChannel(), workspace + ProcessRunner.READYAPI_REPORT_DIRECTORY + JUNIT_REPORT_NAME);
+            FilePath junitReportFileOnSlave = new FilePath(launcher.getChannel(), reportsFolderPath + JUNIT_REPORT_NAME);
             if (!junitReportFileOnSlave.exists()) {
                 throw new Exception("Report file does not exist!");
             }
