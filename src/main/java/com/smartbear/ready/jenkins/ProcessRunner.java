@@ -41,6 +41,7 @@ class ProcessRunner {
     private static final String PROJECT_REPORT = "Project Report";
     private static final String TESTSUITE_REPORT = "TestSuite Report";
     private static final String TESTCASE_REPORT = "Test Case Report";
+    private static final String PLUGIN_NAME_FOR_ANALYTICS = "Jenkins";
     private static final char FOLDER_NAME_SEPARATOR = '-';
     private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_FIRST_NUMBER = 2;
     private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_SECOND_NUMBER = 4;
@@ -146,7 +147,7 @@ class ProcessRunner {
             Properties properties = new Properties();
             properties.load(ProcessRunner.class.getResourceAsStream(SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO));
             String version = properties.getProperty("version", DEFAULT_PLUGIN_VERSION);
-            processParameterList.addAll(Arrays.asList("-q", version));
+            processParameterList.addAll(Arrays.asList("-q", PLUGIN_NAME_FOR_ANALYTICS + "-" + version));
         }
 
         isReportCreated = false;
