@@ -17,6 +17,7 @@ import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
@@ -27,27 +28,18 @@ import java.io.IOException;
 import java.io.PrintStream;
 
 public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildStep {
-    private final String pathToTestrunner;
-    private final String pathToProjectFile;
-    private final String testSuite;
-    private final String testCase;
-    private final String projectPassword;
-    private final String environment;
+    private String pathToTestrunner;
+    private String pathToProjectFile;
+    private String testSuite;
+    private String testCase;
+    private String projectPassword;
+    private String environment;
 
-    // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
     public JenkinsSoapUIProTestRunner(String pathToTestrunner,
-                                      String pathToProjectFile,
-                                      String testSuite,
-                                      String testCase,
-                                      String projectPassword,
-                                      String environment) {
+                                      String pathToProjectFile) {
         this.pathToTestrunner = pathToTestrunner;
         this.pathToProjectFile = pathToProjectFile;
-        this.testSuite = testSuite;
-        this.testCase = testCase;
-        this.projectPassword = projectPassword;
-        this.environment = environment;
     }
 
     public String getPathToTestrunner() {
@@ -62,16 +54,36 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         return testSuite;
     }
 
+    @DataBoundSetter
+    public void setTestSuite(String testSuite) {
+        this.testSuite = testSuite;
+    }
+
     public String getTestCase() {
         return testCase;
+    }
+
+    @DataBoundSetter
+    public void setTestCase(String testCase) {
+        this.testCase = testCase;
     }
 
     public String getProjectPassword() {
         return projectPassword;
     }
 
+    @DataBoundSetter
+    public void setProjectPassword(String projectPassword) {
+        this.projectPassword = projectPassword;
+    }
+
     public String getEnvironment() {
         return environment;
+    }
+
+    @DataBoundSetter
+    public void setEnvironment(String environment) {
+        this.environment = environment;
     }
 
     @Override
