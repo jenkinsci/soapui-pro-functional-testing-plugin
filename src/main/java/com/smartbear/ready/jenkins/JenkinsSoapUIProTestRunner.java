@@ -5,6 +5,7 @@ import hudson.Extension;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Proc;
+import hudson.console.ModelHyperlinkNote;
 import hudson.model.AbstractProject;
 import hudson.model.Result;
 import hudson.model.Run;
@@ -16,36 +17,29 @@ import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
+import org.kohsuke.stapler.DataBoundSetter;
 import org.kohsuke.stapler.QueryParameter;
 import org.kohsuke.stapler.StaplerRequest;
 
 import javax.annotation.Nonnull;
 import javax.servlet.ServletException;
+import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
 public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildStep {
-    private final String pathToTestrunner;
-    private final String pathToProjectFile;
-    private final String testSuite;
-    private final String testCase;
-    private final String projectPassword;
-    private final String environment;
+    private String pathToTestrunner;
+    private String pathToProjectFile;
+    private String testSuite;
+    private String testCase;
+    private String projectPassword;
+    private String environment;
 
-    // Fields in config.jelly must match the parameter names in the "DataBoundConstructor"
     @DataBoundConstructor
     public JenkinsSoapUIProTestRunner(String pathToTestrunner,
-                                      String pathToProjectFile,
-                                      String testSuite,
-                                      String testCase,
-                                      String projectPassword,
-                                      String environment) {
+                                      String pathToProjectFile) {
         this.pathToTestrunner = pathToTestrunner;
         this.pathToProjectFile = pathToProjectFile;
-        this.testSuite = testSuite;
-        this.testCase = testCase;
-        this.projectPassword = projectPassword;
-        this.environment = environment;
     }
 
     public String getPathToTestrunner() {
@@ -60,16 +54,36 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         return testSuite;
     }
 
+    @DataBoundSetter
+    public void setTestSuite(String testSuite) {
+        this.testSuite = testSuite;
+    }
+
     public String getTestCase() {
         return testCase;
+    }
+
+    @DataBoundSetter
+    public void setTestCase(String testCase) {
+        this.testCase = testCase;
     }
 
     public String getProjectPassword() {
         return projectPassword;
     }
 
+    @DataBoundSetter
+    public void setProjectPassword(String projectPassword) {
+        this.projectPassword = projectPassword;
+    }
+
     public String getEnvironment() {
         return environment;
+    }
+
+    @DataBoundSetter
+    public void setEnvironment(String environment) {
+        this.environment = environment;
     }
 
     @Override
@@ -89,30 +103,64 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .build(), run, launcher, listener);
             if (process == null) {
                 throw new AbortException("Could not start SoapUI Pro functional testing.");
+            } else {
+
+                if (process.join() != 0) {
+                    run.setResult(Result.FAILURE);
+                }
+
+                if (processRunner.isReportCreated()) {
+                    boolean published = new JUnitReportPublisher().publish(run, listener, launcher, processRunner.getReportsFolderPath());
+                    if (!published) {
+                        out.println("JUnit-style report was not published!");
+                    }
+                }
+
+                if (processRunner.isPrintableReportCreated()) {
+                    String printableReportName = processRunner.getPrintableReportName();
+
+                    FilePath printableReportFileOnSlave = new FilePath(launcher.getChannel(), processRunner.getReportsFolderPath() +
+                            processRunner.getPrintableReportPath() + printableReportName);
+                    File printableReportFileOnMaster = new File(run.getRootDir().getAbsolutePath() +
+                            File.separator + printableReportName);
+
+                    if (copyReportToBuildDir(printableReportFileOnSlave, new FilePath(printableReportFileOnMaster), listener)) {
+                        boolean printableReportPublished = new PrintableReportPublisher().publish(run, printableReportFileOnMaster, listener);
+                        if (printableReportPublished) {
+                            addPrintableReportLinkToConsoleOutput(out, run, printableReportName);
+                        } else {
+                            out.println("Printable report was not published!");
+                        }
+                    }
+                }
+
             }
         } catch (Exception e) {
             e.printStackTrace(out);
-            if (process != null) {
-                process.kill();
-            }
             throw new AbortException("Could not start SoapUI Pro functional testing.");
 
         } finally {
             if (process != null) {
-                try {
-                    process.join();
-                    if (run.getResult() != Result.FAILURE && processRunner.isReportCreated()) {
-                        boolean published = new ReportPublisher().publish(run, listener, workspace);
-                        if (!published) {
-                            out.println("JUnit-style report was not published!");
-                        }
-                    }
-                } catch (Exception e) {
-                    throw new AbortException("Could not start SoapUI Pro functional testing.");
-                }
+                process.kill();
             }
         }
+    }
 
+    private boolean copyReportToBuildDir(FilePath fromFile, FilePath toFile, TaskListener listener) {
+        try {
+            if (fromFile.exists()) {
+                toFile.copyFrom(fromFile);
+                return true;
+            }
+        } catch (Exception e) {
+            e.printStackTrace(listener.getLogger());
+        }
+        return false;
+    }
+
+    private void addPrintableReportLinkToConsoleOutput(PrintStream out, Run<?, ?> run, String printableReportName) {
+        String printableReportLink = "/" + run.getUrl() + SoapUIProTestResultsAction.PLUGIN_NAME + "/dynamic/" + printableReportName;
+        out.println(ModelHyperlinkNote.encodeTo(printableReportLink, "Click here to view detailed report"));
     }
 
     @Override
@@ -140,6 +188,13 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                 throws IOException, ServletException {
             if (value.length() == 0) {
                 return FormValidation.error("Please, set path to the SoapUI Pro project");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckTestSuite(@QueryParameter String value, @QueryParameter String testCase) {
+            if (value.length() == 0 && testCase.length() != 0) {
+                return FormValidation.error("Please, enter a test suite for the specified test case");
             }
             return FormValidation.ok();
         }
