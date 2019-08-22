@@ -111,8 +111,11 @@ class ProcessRunner {
                 isPrintableReportTypeSet = true;
             }
         }
-        if (StringUtils.isNotBlank(params.getTags())) {
-            processParameterList.addAll(Arrays.asList("-T", params.getTags()));
+        if (StringUtils.isNotBlank(params.getTestSuiteTags())) {
+            processParameterList.addAll(Arrays.asList("-T", "TestSuite " + params.getTestSuiteTags()));
+        }
+        if (StringUtils.isNotBlank(params.getTestCaseTags())) {
+            processParameterList.addAll(Arrays.asList("-T", "TestCase " + params.getTestCaseTags()));
         }
         if (StringUtils.isNotBlank(params.getProjectPassword())) {
             processParameterList.addAll(Arrays.asList("-x", params.getProjectPassword()));

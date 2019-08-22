@@ -18,8 +18,12 @@
              description="Specifies the test case to run.">
         <f:textbox/>
     </f:entry>
-    <f:entry title="Tags" field="tags"
-             description="Runs only the test cases or test suites whose tags are specified. Format: &quot;TestCase tag1[, tag2 ...]&quot; or &quot;TestSuite tag1[, tag2 ...]&quot;.">
+    <f:entry title="Test Suite Tags" field="testSuiteTags"
+             description="Specifies the tags that a test suite must have to be run. You can specify tags as a list of comma-separated values or create a complex conditional using || (OR), &amp;&amp; (AND) and ! (NOT) operators.">
+        <f:textbox/>
+    </f:entry>
+    <f:entry title="Test Case Tags" field="testCaseTags"
+             description="Specifies the tags that a test case must have to be run. You can specify tags as a list of comma-separated values or create a complex conditional using || (OR), &amp;&amp; (AND) and ! (NOT) operators">
         <f:textbox/>
     </f:entry>
     <f:entry title="Project Password" field="projectPassword"

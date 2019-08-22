@@ -33,7 +33,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private String pathToProjectFile;
     private String testSuite;
     private String testCase;
-    private String tags;
+    private String testSuiteTags;
+    private String testCaseTags;
     private String projectPassword;
     private String environment;
 
@@ -70,13 +71,22 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.testCase = testCase;
     }
 
-    public String getTags() {
-        return tags;
+    public String getTestSuiteTags() {
+        return testSuiteTags;
     }
 
     @DataBoundSetter
-    public void setTags(String tags) {
-        this.tags = tags;
+    public void setTestSuiteTags(String tags) {
+        this.testSuiteTags = tags;
+    }
+
+    public String getTestCaseTags() {
+        return testCaseTags;
+    }
+
+    @DataBoundSetter
+    public void setTestCaseTags(String tags) {
+        this.testCaseTags = tags;
     }
 
     public String getProjectPassword() {
@@ -108,7 +118,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withPathToProjectFile(pathToProjectFile)
                     .withTestSuite(testSuite)
                     .withTestCase(testCase)
-                    .withTags(tags)
+                    .withTestSuiteTags(testSuiteTags)
+                    .withTestCaseTags(testCaseTags)
                     .withProjectPassword(projectPassword)
                     .withEnvironment(environment)
                     .withWorkspace(workspace)
