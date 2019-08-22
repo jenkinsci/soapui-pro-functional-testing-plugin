@@ -7,6 +7,7 @@ public class ParameterContainer {
     private String pathToProjectFile;
     private String testSuite;
     private String testCase;
+    private String tags;
     private String projectPassword;
     private String environment;
     private FilePath workspace;
@@ -25,6 +26,10 @@ public class ParameterContainer {
 
     public String getTestCase() {
         return testCase;
+    }
+
+    public String getTags() {
+        return tags;
     }
 
     public String getProjectPassword() {
@@ -63,6 +68,11 @@ public class ParameterContainer {
 
         public Builder withTestCase(String testCase) {
             parameterContainer.testCase = testCase;
+            return this;
+        }
+
+        public Builder withTags(String tags) {
+            parameterContainer.tags = tags;
             return this;
         }
 

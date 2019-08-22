@@ -111,6 +111,9 @@ class ProcessRunner {
                 isPrintableReportTypeSet = true;
             }
         }
+        if (StringUtils.isNotBlank(params.getTags())) {
+            processParameterList.addAll(Arrays.asList("-T", params.getTags()));
+        }
         if (StringUtils.isNotBlank(params.getProjectPassword())) {
             processParameterList.addAll(Arrays.asList("-x", params.getProjectPassword()));
         }
