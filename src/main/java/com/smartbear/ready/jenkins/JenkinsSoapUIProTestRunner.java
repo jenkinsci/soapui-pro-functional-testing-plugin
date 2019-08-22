@@ -27,11 +27,13 @@ import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
 
+@SuppressWarnings("unused")
 public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildStep {
     private String pathToTestrunner;
     private String pathToProjectFile;
     private String testSuite;
     private String testCase;
+    private String tags;
     private String projectPassword;
     private String environment;
 
@@ -68,6 +70,15 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.testCase = testCase;
     }
 
+    public String getTags() {
+        return tags;
+    }
+
+    @DataBoundSetter
+    public void setTags(String tags) {
+        this.tags = tags;
+    }
+
     public String getProjectPassword() {
         return projectPassword;
     }
@@ -97,6 +108,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withPathToProjectFile(pathToProjectFile)
                     .withTestSuite(testSuite)
                     .withTestCase(testCase)
+                    .withTags(tags)
                     .withProjectPassword(projectPassword)
                     .withEnvironment(environment)
                     .withWorkspace(workspace)

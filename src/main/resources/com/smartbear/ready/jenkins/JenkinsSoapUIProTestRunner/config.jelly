@@ -18,6 +18,10 @@
              description="Specifies the test case to run.">
         <f:textbox/>
     </f:entry>
+    <f:entry title="Tags" field="tags"
+             description="Runs only the test cases or test suites whose tags are specified. Format: &quot;TestCase tag1[, tag2 ...]&quot; or &quot;TestSuite tag1[, tag2 ...]&quot;.">
+        <f:textbox/>
+    </f:entry>
     <f:entry title="Project Password" field="projectPassword"
              description="Specifies the encryption password.">
         <f:password autocomplete="new-password"/>
