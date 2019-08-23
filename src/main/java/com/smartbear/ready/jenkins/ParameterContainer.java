@@ -7,7 +7,8 @@ public class ParameterContainer {
     private String pathToProjectFile;
     private String testSuite;
     private String testCase;
-    private String tags;
+    private String testSuiteTags;
+    private String testCaseTags;
     private String projectPassword;
     private String environment;
     private FilePath workspace;
@@ -28,8 +29,12 @@ public class ParameterContainer {
         return testCase;
     }
 
-    public String getTags() {
-        return tags;
+    public String getTestSuiteTags() {
+        return testSuiteTags;
+    }
+
+    public String getTestCaseTags() {
+        return testCaseTags;
     }
 
     public String getProjectPassword() {
@@ -71,8 +76,13 @@ public class ParameterContainer {
             return this;
         }
 
-        public Builder withTags(String tags) {
-            parameterContainer.tags = tags;
+        public Builder withTestSuiteTags(String tags) {
+            parameterContainer.testSuiteTags = tags;
+            return this;
+        }
+
+        public Builder withTestCaseTags(String tags) {
+            parameterContainer.testCaseTags = tags;
             return this;
         }
 
