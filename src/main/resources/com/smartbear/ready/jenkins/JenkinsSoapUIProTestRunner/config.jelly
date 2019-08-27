@@ -23,7 +23,7 @@
         <f:textbox/>
     </f:entry>
     <f:entry title="Test Case Tags" field="testCaseTags"
-             description="Specifies the tags that a test case must have to be run. You can specify tags as a list of comma-separated values or create a complex conditional using || (OR), &amp;&amp; (AND) and ! (NOT) operators">
+             description="Specifies the tags that a test case must have to be run. You can specify tags as a list of comma-separated values or create a complex conditional using || (OR), &amp;&amp; (AND) and ! (NOT) operators.">
         <f:textbox/>
     </f:entry>
     <f:entry title="Project Password" field="projectPassword"
