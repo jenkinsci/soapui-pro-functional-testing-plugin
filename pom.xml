@@ -18,7 +18,7 @@
     <packaging>hpi</packaging>
     <name>SoapUI Pro Functional Testing Plugin</name>
     <version>1.2-SNAPSHOT</version>
-    <url>https://wiki.jenkins.io/display/JENKINS/SoapUI+Pro+Functional+Testing+Plugin</url>
+    <url>https://github.com/jenkinsci/soapui-pro-functional-testing-plugin</url>
     <licenses>
         <license>
             <name>GPL license</name>
