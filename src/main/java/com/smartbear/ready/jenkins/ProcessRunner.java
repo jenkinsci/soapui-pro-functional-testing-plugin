@@ -126,7 +126,7 @@ class ProcessRunner {
 
         String projectFilePath = params.getPathToProjectFile();
         FilePath projectFile = new FilePath(channel, projectFilePath);
-        if (StringUtils.isNotBlank(projectFilePath) && projectFile.exists() && projectFile.length() != 0) {
+        if (StringUtils.isNotBlank(projectFilePath) && projectFile.exists() && (projectFile.isDirectory() || projectFile.length() != 0)) {
             try {
                 checkIfSoapUIProProject(projectFile);
             } catch (Exception e) {
