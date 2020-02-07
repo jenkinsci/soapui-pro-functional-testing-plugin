@@ -39,7 +39,11 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 ### Version history
 
-#### Version 1.2
+#### Version 1.3 (February 7, 2020)
+
+* *Fixed*: In some cases, a job with a composite project could not be run.
+
+#### Version 1.2 (December 13, 2019)
 
 * *New feature*: Support for [tags](https://support.smartbear.com/readyapi/docs/soapui/ui/project.html#tags).
 
