@@ -13,6 +13,7 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import hudson.util.Secret;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
 import org.jenkinsci.Symbol;
@@ -35,7 +36,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private String testCase;
     private String testSuiteTags;
     private String testCaseTags;
-    private String projectPassword;
+    private Secret projectPassword;
     private String environment;
 
     @DataBoundConstructor
@@ -90,12 +91,12 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     }
 
     public String getProjectPassword() {
-        return projectPassword;
+        return Secret.toString(projectPassword);
     }
 
     @DataBoundSetter
     public void setProjectPassword(String projectPassword) {
-        this.projectPassword = projectPassword;
+        this.projectPassword = Secret.fromString(projectPassword);
     }
 
     public String getEnvironment() {
@@ -120,7 +121,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withTestCase(testCase)
                     .withTestSuiteTags(testSuiteTags)
                     .withTestCaseTags(testCaseTags)
-                    .withProjectPassword(projectPassword)
+                    .withProjectPassword(getProjectPassword())
                     .withEnvironment(environment)
                     .withWorkspace(workspace)
                     .build(), run, launcher, listener);
