@@ -39,6 +39,15 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 ### Version history
 
+#### Version 1.4 (April 10, 2020)
+
+* *Fixed*: A security vulnerability in project password storage. 
+
+If you update to version 1.4, to ensure the security of your passwords, you need to do the following for all the jobs that use the plugin:
+
+1. Select a job and click **Configure**. 
+2. Save the configuration without making any changes by clicking **Save** or **Apply**.
+
 #### Version 1.3 (February 7, 2020)
 
 * *Fixed*: In some cases, a job with a composite project could not be run.
