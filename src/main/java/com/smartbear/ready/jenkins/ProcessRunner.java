@@ -40,7 +40,7 @@ class ProcessRunner {
     private static final String TESTRUNNER_VERSION_DETERMINANT = "ready-api-ui-";
     private static final String PROJECT_REPORT = "Project Report";
     private static final String TESTSUITE_REPORT = "TestSuite Report";
-    private static final String TESTCASE_REPORT = "Test Case Report";
+    private static final String TESTCASE_REPORT = "TestCase Report";
     private static final String PLUGIN_NAME_FOR_ANALYTICS = "Jenkins";
     private static final char FOLDER_NAME_SEPARATOR = '-';
     private static final int TESTRUNNER_VERSION_FOR_ANALYTICS_FIRST_NUMBER = 2;
