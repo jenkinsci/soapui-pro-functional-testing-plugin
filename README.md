@@ -39,6 +39,10 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 ### Version history
 
+#### Version 1.5 (June 24, 2020)
+
+* *Fixed*: The test case report could not be generated when a single test case was run.
+
 #### Version 1.4 (April 10, 2020)
 
 * *Fixed*: A security vulnerability in project password storage. 
