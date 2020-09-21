@@ -90,8 +90,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.testCaseTags = tags;
     }
 
-    public String getProjectPassword() {
-        return Secret.toString(projectPassword);
+    public Secret getProjectPassword() {
+        return projectPassword;
     }
 
     @DataBoundSetter
@@ -121,7 +121,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withTestCase(testCase)
                     .withTestSuiteTags(testSuiteTags)
                     .withTestCaseTags(testCaseTags)
-                    .withProjectPassword(getProjectPassword())
+                    .withProjectPassword(Secret.toString(getProjectPassword()))
                     .withEnvironment(environment)
                     .withWorkspace(workspace)
                     .build(), run, launcher, listener);
