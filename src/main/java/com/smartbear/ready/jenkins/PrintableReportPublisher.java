@@ -15,7 +15,7 @@ public class PrintableReportPublisher {
                     currentAction = new SoapUIProTestResultsAction(run, printableReportFile);
                     run.addAction(currentAction);
                 }
-                listener.getLogger().println("SoapUI Pro Test Results were published!");
+                listener.getLogger().println("ReadyAPI Test Results were published!");
             }
         } catch (Exception e) {
             e.printStackTrace(listener.getLogger());

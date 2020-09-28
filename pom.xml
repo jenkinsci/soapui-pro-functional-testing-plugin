@@ -16,7 +16,7 @@
 
     <artifactId>soapui-pro-functional-testing</artifactId>
     <packaging>hpi</packaging>
-    <name>SoapUI Pro Functional Testing Plugin</name>
+    <name>ReadyAPI Functional Testing Plugin</name>
     <version>1.6-SNAPSHOT</version>
     <url>https://github.com/jenkinsci/soapui-pro-functional-testing-plugin</url>
     <licenses>

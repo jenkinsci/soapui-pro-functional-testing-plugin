@@ -24,7 +24,7 @@ public class SoapUIProTestResultsAction implements Action {
 
     @Override
     public String getDisplayName() {
-        return "SoapUI Pro Test Results";
+        return "ReadyAPI Test Results";
     }
 
     @Override

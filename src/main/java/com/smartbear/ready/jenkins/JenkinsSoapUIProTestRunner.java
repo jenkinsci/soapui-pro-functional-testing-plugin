@@ -126,7 +126,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withWorkspace(workspace)
                     .build(), run, launcher, listener);
             if (process == null) {
-                throw new AbortException("Could not start SoapUI Pro functional testing.");
+                throw new AbortException("Could not start ReadyAPI functional testing.");
             } else {
 
                 if (process.join() != 0) {
@@ -161,7 +161,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
             }
         } catch (Exception e) {
             e.printStackTrace(out);
-            throw new AbortException("Could not start SoapUI Pro functional testing.");
+            throw new AbortException("Could not start ReadyAPI functional testing.");
 
         } finally {
             if (process != null) {
@@ -211,7 +211,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         public FormValidation doCheckPathToProjectFile(@QueryParameter String value)
                 throws IOException, ServletException {
             if (value.length() == 0) {
-                return FormValidation.error("Please, set path to the SoapUI Pro project");
+                return FormValidation.error("Please, set path to the ReadyAPI project");
             }
             return FormValidation.ok();
         }
@@ -230,7 +230,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
 
         @Override
         public String getDisplayName() {
-            return "SoapUI Pro: Run Functional Test";
+            return "ReadyAPI Test: Run Functional Test";
         }
 
         @Override
