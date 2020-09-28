@@ -6,7 +6,7 @@
             description="Specifies the fully-qualified name of the runner file (testrunner.bat or testrunner.sh).">
         <f:textbox/>
     </f:entry>
-    <f:entry title="Path to SoapUI Pro project" field="pathToProjectFile"
+    <f:entry title="Path to ReadyAPI project" field="pathToProjectFile"
              description="Specifies the fully-qualified name of the project file.">
         <f:textbox/>
     </f:entry>

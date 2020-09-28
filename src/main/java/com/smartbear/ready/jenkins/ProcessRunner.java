@@ -66,7 +66,7 @@ class ProcessRunner {
         if (StringUtils.isNotBlank(testrunnerFilePath) && testrunnerFile.exists() && testrunnerFile.length() != 0) {
             try {
                 if (!isSoapUIProTestrunner(testrunnerFile)) {
-                    out.println("The testrunner file is not correct. Please confirm it's the testrunner for SoapUI Pro. Exiting.");
+                    out.println("The testrunner file is not correct. Please confirm it's the testrunner for ReadyAPI Test. Exiting.");
                     return null;
                 }
             } catch (IOException e) {
@@ -134,7 +134,7 @@ class ProcessRunner {
                 return null;
             }
             if (!isSoapUIProProject) {
-                out.println("The project is not a SoapUI Pro project! Exiting.");
+                out.println("The project is not a ReadyAPI project! Exiting.");
                 return null;
             }
             processParameterList.add(projectFilePath);
@@ -159,7 +159,7 @@ class ProcessRunner {
         isReportCreated = false;
         isPrintableReportCreated = false;
         Launcher.ProcStarter processStarter = launcher.launch().cmds(processParameterList).envs(run.getEnvironment(listener)).readStdout().quiet(true);
-        out.println("Starting SoapUI Pro functional test.");
+        out.println("Starting ReadyAPI functional test.");
 
         final Proc process = processStarter.start();
         final BufferedReader bufferedReader = new BufferedReader(new InputStreamReader(process.getStdout()));
@@ -225,7 +225,7 @@ class ProcessRunner {
     }
 
     private void checkIfSoapUIProProject(FilePath projectFile) throws Exception {
-        //if project is composite, it is SoapUI Pro project also
+        //if project is composite, it is ReadyAPI project also
         if (projectFile.isDirectory()) {
             isSoapUIProProject = true;
             return;

@@ -12,7 +12,7 @@ import java.io.IOException;
 
 public class DynamicReportAction implements Action {
 
-    private final static String DOWNLOAD_FILE_NAME = "SoapUI Pro Test Results";
+    private final static String DOWNLOAD_FILE_NAME = "ReadyAPI Test Results";
 
     private final File printableReportFile;
 

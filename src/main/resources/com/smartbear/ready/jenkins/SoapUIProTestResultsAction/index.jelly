@@ -7,7 +7,7 @@
         <st:include it="${it.build}" page="sidepanel.jelly"/>
 
         <l:main-panel>
-            <h2>SoapUI Pro Test Results</h2><br/>
+            <h2>ReadyAPI Test Results</h2><br/>
 
             <a href="dynamic/${it.getPrintableReportName()}">Click here to view detailed report</a>
         </l:main-panel>
