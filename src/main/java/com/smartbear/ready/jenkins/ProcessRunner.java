@@ -1,5 +1,6 @@
 package com.smartbear.ready.jenkins;
 
+import hudson.EnvVars;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Proc;
@@ -61,7 +62,8 @@ class ProcessRunner {
         List<String> processParameterList = new ArrayList<>();
         channel = launcher.getChannel();
         setSlaveFileSeparator(launcher);
-        String testrunnerFilePath = buildTestRunnerPath(params.getPathToTestrunner(), launcher);
+        EnvVars envVars = run.getEnvironment(listener);
+        String testrunnerFilePath = buildTestRunnerPath(envVars.expand(params.getPathToTestrunner()), launcher);
         FilePath testrunnerFile = new FilePath(channel, testrunnerFilePath);
         if (StringUtils.isNotBlank(testrunnerFilePath) && testrunnerFile.exists() && testrunnerFile.length() != 0) {
             try {
@@ -124,7 +126,7 @@ class ProcessRunner {
             processParameterList.addAll(Arrays.asList("-E", params.getEnvironment()));
         }
 
-        String projectFilePath = params.getPathToProjectFile();
+        String projectFilePath = envVars.expand(params.getPathToProjectFile());
         FilePath projectFile = new FilePath(channel, projectFilePath);
         if (StringUtils.isNotBlank(projectFilePath) && projectFile.exists() && (projectFile.isDirectory() || projectFile.length() != 0)) {
             try {
