@@ -160,7 +160,7 @@ class ProcessRunner {
 
         isReportCreated = false;
         isPrintableReportCreated = false;
-        Launcher.ProcStarter processStarter = launcher.launch().cmds(processParameterList).envs(run.getEnvironment(listener)).readStdout().quiet(true);
+        Launcher.ProcStarter processStarter = launcher.launch().cmds(processParameterList).envs(envVars).readStdout().quiet(true);
         out.println("Starting ReadyAPI functional test.");
 
         final Proc process = processStarter.start();
