@@ -7,7 +7,7 @@
         <f:textbox/>
     </f:entry>
     <f:entry title="Path to ReadyAPI project" field="pathToProjectFile"
-             description="Specifies the fully-qualified name of the project file.">
+             description="Specifies the name of the project file, either fully-qualified or relative to the workspace.">
         <f:textbox/>
     </f:entry>
     <f:entry title="Test Suite" field="testSuite"
