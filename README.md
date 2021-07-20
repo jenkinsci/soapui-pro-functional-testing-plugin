@@ -39,6 +39,11 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 ### Version history
 
+#### Version 1.7 (July 21, 2021)
+
+* *New feature*: Added the possibility to use EnvVars for TestRunner and project file paths.
+* *Fixed*: Project execution sometimes hung on a slave machine.
+
 #### Version 1.5 (June 24, 2020)
 
 * *Fixed*: The test case report could not be generated when a single test case was run.
