@@ -1,5 +1,6 @@
 package com.smartbear.ready.jenkins;
 
+import com.smartbear.ready.jenkins.tools.ProjectFileValidator;
 import hudson.FilePath;
 import hudson.Launcher;
 import hudson.Proc;
@@ -8,13 +9,8 @@ import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
 import org.apache.commons.lang.StringUtils;
-import org.xml.sax.Attributes;
-import org.xml.sax.SAXException;
-import org.xml.sax.helpers.DefaultHandler;
 
 import javax.annotation.Nonnull;
-import javax.xml.parsers.SAXParser;
-import javax.xml.parsers.SAXParserFactory;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
@@ -28,8 +24,6 @@ class ProcessRunner {
     public static final String READYAPI_REPORT_DIRECTORY = "ReadyAPI_report";
     public static final String REPORT_FORMAT = "PDF";
     private static final String TESTRUNNER_NAME = "testrunner";
-    private static final String LAST_ELEMENT_TO_READ = "con:soapui-project";
-    private static final String ATTRIBUTE_TO_CHECK = "updated";
     private static final String TERMINATION_STRING = "Please enter absolute path of the license file";
     private static final String SH = ".sh";
     private static final String BAT = ".bat";
@@ -128,7 +122,7 @@ class ProcessRunner {
         FilePath projectFile = new FilePath(channel, projectFilePath);
         if (StringUtils.isNotBlank(projectFilePath) && projectFile.exists() && (projectFile.isDirectory() || projectFile.length() != 0)) {
             try {
-                checkIfSoapUIProProject(projectFile);
+                isSoapUIProProject = ProjectFileValidator.isValidProjectPath(projectFile);
             } catch (Exception e) {
                 e.printStackTrace(out);
                 return null;
@@ -224,21 +218,6 @@ class ProcessRunner {
         }
     }
 
-    private void checkIfSoapUIProProject(FilePath projectFile) throws Exception {
-        //if project is composite, it is ReadyAPI project also
-        if (projectFile.isDirectory()) {
-            isSoapUIProProject = true;
-            return;
-        }
-        SAXParserFactory factory = SAXParserFactory.newInstance();
-        SAXParser saxParser = factory.newSAXParser();
-        try {
-            saxParser.parse(projectFile.read(), new ReadXmlUpToSpecificElementSaxParser(LAST_ELEMENT_TO_READ));
-        } catch (MySAXTerminatorException exp) {
-            //nothing to do, expected
-        }
-    }
-
     private boolean shouldSendAnalytics(FilePath testrunnerFile) throws IOException, InterruptedException {
         String testrunnerFileToString = testrunnerFile.readToString();
         if (testrunnerFileToString.contains(TESTRUNNER_VERSION_DETERMINANT)) {
@@ -292,28 +271,6 @@ class ProcessRunner {
 
     protected String getPrintableReportPath() {
         return this.printableReportPath;
-    }
-
-    private class ReadXmlUpToSpecificElementSaxParser extends DefaultHandler {
-        private final String lastElementToRead;
-
-        ReadXmlUpToSpecificElementSaxParser(String lastElementToRead) {
-            this.lastElementToRead = lastElementToRead;
-        }
-
-        @Override
-        public void startElement(String uri, String localName, String qName, Attributes attributes) throws MySAXTerminatorException {
-            if (lastElementToRead.equals(qName)) {
-                String value = attributes.getValue(ATTRIBUTE_TO_CHECK);
-                if (value != null) {
-                    isSoapUIProProject = !value.isEmpty();
-                }
-                throw new MySAXTerminatorException();
-            }
-        }
-    }
-
-    private class MySAXTerminatorException extends SAXException {
     }
 
 }
