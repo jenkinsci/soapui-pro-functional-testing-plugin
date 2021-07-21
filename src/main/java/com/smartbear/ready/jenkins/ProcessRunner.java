@@ -120,9 +120,11 @@ class ProcessRunner {
             processParameterList.addAll(Arrays.asList("-E", params.getEnvironment()));
         }
 
-        String projectFilePath = envVars.expand(params.getPathToProjectFile());
-        FilePath projectFile = new FilePath(channel, projectFilePath);
-        if (StringUtils.isNotBlank(projectFilePath) && projectFile.exists() && (projectFile.isDirectory() || projectFile.length() != 0)) {
+        String expandedProjectFilePathConfig = envVars.expand(params.getPathToProjectFile());
+        String projectFilePath;
+        if ((projectFilePath = testProjectFilePath(expandedProjectFilePathConfig)) != null ||
+                (projectFilePath = testProjectFilePath(params.getWorkspace() + slaveFileSeparator + expandedProjectFilePathConfig)) != null) {
+            FilePath projectFile = new FilePath(channel, projectFilePath);
             try {
                 isSoapUIProProject = ProjectFileValidator.isValidProjectPath(projectFile);
             } catch (Exception e) {
@@ -135,7 +137,7 @@ class ProcessRunner {
             }
             processParameterList.add(projectFilePath);
         } else {
-            out.println("Failed to load the project file [" + projectFilePath + "]");
+            out.println("Failed to load the project file [" + params.getPathToProjectFile() + "]");
             return null;
         }
 
@@ -186,6 +188,12 @@ class ProcessRunner {
 
         return process;
     }
+
+	private String testProjectFilePath(String projectFilePath)
+			throws IOException, InterruptedException {
+        FilePath projectFile = new FilePath(channel, projectFilePath);
+		return StringUtils.isNotBlank(projectFilePath) && projectFile.exists() && (projectFile.isDirectory() || projectFile.length() != 0) ? projectFilePath : null;
+	}
 
     public String getReportsFolderPath() {
         return reportsFolderPath;
