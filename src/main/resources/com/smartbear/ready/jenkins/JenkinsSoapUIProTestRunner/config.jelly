@@ -34,5 +34,9 @@
              description="Specifies the environment configuration for the test run.">
         <f:textbox/>
     </f:entry>
+    <f:entry title="SLM Licence Access Key" field="slmLicenceAccessKey"
+             description="Specifies SLM Licence Access Key (Optional)">
+        <f:textbox/>
+    </f:entry>
 
 </j:jelly>

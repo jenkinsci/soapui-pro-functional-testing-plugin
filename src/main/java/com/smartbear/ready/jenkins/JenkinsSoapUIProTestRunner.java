@@ -38,6 +38,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private String testCaseTags;
     private Secret projectPassword;
     private String environment;
+    private String slmLicenceAccessKey;
 
     @DataBoundConstructor
     public JenkinsSoapUIProTestRunner(String pathToTestrunner,
@@ -108,6 +109,15 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.environment = environment;
     }
 
+    public String getSlmLicenceAccessKey() {
+        return slmLicenceAccessKey;
+    }
+
+    @DataBoundSetter
+    public void setSlmLicenceAccessKey(String slmLicenceAccessKey) {
+        this.slmLicenceAccessKey = slmLicenceAccessKey;
+    }
+
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
         Proc process = null;
@@ -123,6 +133,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withTestCaseTags(testCaseTags)
                     .withProjectPassword(Secret.toString(getProjectPassword()))
                     .withEnvironment(environment)
+                    .withSlmLicenceAccessKey(slmLicenceAccessKey)
                     .withWorkspace(workspace)
                     .build(), run, launcher, listener);
             if (process == null) {
