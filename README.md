@@ -40,6 +40,10 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 ### Version history
 
+#### Version 1.8 (May 15, 2023)
+
+* *New feature*: Added the possibility to use SLM Licence Access Key for TestRunner as optional parameter.
+
 #### Version 1.7 (July 21, 2021)
 
 * *New feature*: Added the possibility to use EnvVars for TestRunner and project file paths.
