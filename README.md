@@ -2,7 +2,7 @@
 
 ### About
 
-A SmartBear plugin used to run ReadyAPI functional tests from Jenkins builds. 
+A SmartBear plugin used to run ReadyAPI functional tests from Jenkins builds.
 
 ### Requirements
 
@@ -15,8 +15,8 @@ Make sure you run Jenkins under the same user account you used to activate the R
 
 ### Configuration
 
-The build step has the following settings:  
-	
+The build step has the following settings:
+
 * **Path to testrunner** - Specifies the fully-qualified path to the runner file (*testrunner.bat* or *testrunner.sh*). By default, you can find it in the *<ReadyAPI installation>/bin* directory.
 * **Path to ReadyAPI project** -  Specifies the fully-qualified path to the ReadyAPI project you want to run.
 * **Test Suite** - Specifies the test suite to run. To run all the test suites of your project, leave the field blank.
@@ -24,6 +24,7 @@ The build step has the following settings:
 * **Test Suite Tags** and **Test Case Tags** - Specify which tags must contain the test suite or test case to be run. To create complex conditions, use the `||` (logical OR), `&&` (logical AND) and `!` (logical NOT) operators.
 * **Project Password** - Specifies the encryption password, if you encrypted the entire project or some of its custom properties.
 * **Environment** - Specifies the environment configuration for the test run.
+* **SLM Licence Access Key** - Specifies SLM Licence Access Key (Optional).
 
 ### Reports
 
@@ -39,6 +40,10 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 ### Version history
 
+#### Version 1.8 (May 15, 2023)
+
+* *New feature*: Added the possibility to use SLM Licence Access Key for TestRunner as optional parameter.
+
 #### Version 1.7 (July 21, 2021)
 
 * *New feature*: Added the possibility to use EnvVars for TestRunner and project file paths.
@@ -50,11 +55,11 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 #### Version 1.4 (April 10, 2020)
 
-* *Fixed*: A security vulnerability in project password storage. 
+* *Fixed*: A security vulnerability in project password storage.
 
 If you update to version 1.4, to ensure the security of your passwords, you need to do the following for all the jobs that use the plugin:
 
-1. Select a job and click **Configure**. 
+1. Select a job and click **Configure**.
 2. Save the configuration without making any changes by clicking **Save** or **Apply**.
 
 #### Version 1.3 (February 7, 2020)

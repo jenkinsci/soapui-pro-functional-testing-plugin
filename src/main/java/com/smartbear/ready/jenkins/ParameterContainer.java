@@ -11,6 +11,7 @@ public class ParameterContainer {
     private String testCaseTags;
     private String projectPassword;
     private String environment;
+    private String slmLicenceAccessKey;
     private FilePath workspace;
 
     public String getPathToTestrunner() {
@@ -43,6 +44,10 @@ public class ParameterContainer {
 
     public String getEnvironment() {
         return environment;
+    }
+
+    public String getSlmLicenceAccessKey() {
+        return slmLicenceAccessKey;
     }
 
     public FilePath getWorkspace() {
@@ -101,5 +106,9 @@ public class ParameterContainer {
             return this;
         }
 
+        public Builder withSlmLicenceAccessKey(String slmLicenceAccessKey) {
+            parameterContainer.slmLicenceAccessKey = slmLicenceAccessKey;
+            return this;
+        }
     }
 }

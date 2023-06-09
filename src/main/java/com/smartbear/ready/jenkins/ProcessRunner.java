@@ -119,10 +119,14 @@ class ProcessRunner {
         if (StringUtils.isNotBlank(params.getEnvironment())) {
             processParameterList.addAll(Arrays.asList("-E", params.getEnvironment()));
         }
+        if (StringUtils.isNotBlank(params.getSlmLicenceAccessKey())) {
+            processParameterList.addAll(Arrays.asList("-K", params.getSlmLicenceAccessKey()));
+        }
 
         String projectFilePath = envVars.expand(params.getPathToProjectFile());
         FilePath projectFile = new FilePath(channel, projectFilePath);
-        if (StringUtils.isNotBlank(projectFilePath) && projectFile.exists() && (projectFile.isDirectory() || projectFile.length() != 0)) {
+        if (StringUtils.isNotBlank(projectFilePath) && projectFile.exists()
+                && (projectFile.isDirectory() || projectFile.length() != 0)) {
             try {
                 isSoapUIProProject = ProjectFileValidator.isValidProjectPath(projectFile);
             } catch (Exception e) {
