@@ -119,8 +119,20 @@ class ProcessRunner {
         if (StringUtils.isNotBlank(params.getEnvironment())) {
             processParameterList.addAll(Arrays.asList("-E", params.getEnvironment()));
         }
-        if (StringUtils.isNotBlank(params.getSlmLicenceAccessKey())) {
-            processParameterList.addAll(Arrays.asList("-K", params.getSlmLicenceAccessKey()));
+
+        addAuthorisationRelatedParameters(processParameterList, params);
+
+        if (!isPrintableReportTypeSet) {
+            processParameterList.addAll(Arrays.asList("-R", PROJECT_REPORT));
+            setPrintableReportParams("", PROJECT_REPORT);
+            isPrintableReportTypeSet = true;
+        }
+
+        if (shouldSendAnalytics(testrunnerFile)) {
+            Properties properties = new Properties();
+            properties.load(ProcessRunner.class.getResourceAsStream(SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO));
+            String version = properties.getProperty("version", DEFAULT_PLUGIN_VERSION);
+            processParameterList.addAll(Arrays.asList("-q", PLUGIN_NAME_FOR_ANALYTICS + "-" + version));
         }
 
         String projectFilePath = envVars.expand(params.getPathToProjectFile());
@@ -143,21 +155,9 @@ class ProcessRunner {
             return null;
         }
 
-        if (!isPrintableReportTypeSet) {
-            processParameterList.addAll(Arrays.asList("-R", PROJECT_REPORT));
-            setPrintableReportParams("", PROJECT_REPORT);
-            isPrintableReportTypeSet = true;
-        }
-
-        if (shouldSendAnalytics(testrunnerFile)) {
-            Properties properties = new Properties();
-            properties.load(ProcessRunner.class.getResourceAsStream(SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO));
-            String version = properties.getProperty("version", DEFAULT_PLUGIN_VERSION);
-            processParameterList.addAll(Arrays.asList("-q", PLUGIN_NAME_FOR_ANALYTICS + "-" + version));
-        }
-
         isReportCreated = false;
         isPrintableReportCreated = false;
+        out.println("Parameters for launching ReadyAPI functional test: " + processParameterList);
         Launcher.ProcStarter processStarter = launcher.launch().cmds(processParameterList).envs(envVars).readStdout().quiet(true);
         out.println("Starting ReadyAPI functional test.");
 
@@ -189,6 +189,42 @@ class ProcessRunner {
         }).start();
 
         return process;
+    }
+
+    private void addAuthorisationRelatedParameters(List<String> processParameterList, ParameterContainer params) {
+        AuthMethod authMethod = AuthMethod.valueOf(params.getAuthMethod());
+
+        if (AuthMethod.FILE_BASED.equals(authMethod)) {
+            return;
+        }
+
+        addCustomParameterIfNotBlank(processParameterList, "-DlicenseApiHost", params.getSlmLicenceApiHost());
+        addCustomParameterIfNotBlank(processParameterList, "-DlicenseApiPort", params.getSlmLicenceApiPort());
+
+        switch(authMethod) {
+            case API_KEY:
+                addParameterIfNotBlank(processParameterList, "-K", params.getSlmLicenceAccessKey());
+                break;
+            case USER_AND_PASSWORD:
+                addParameterIfNotBlank(processParameterList, "-U", params.getUser());
+                addParameterIfNotBlank(processParameterList, "-V", params.getPassword());
+                break;
+            case ACCESS_FOR_EVERYONE:
+                processParameterList.add("-DlicenseApiAccessForEveryone=true");
+                break;
+        }
+    }
+
+    private void addParameterIfNotBlank(List<String> processParameterList, String paramSymbol, String value) {
+        if (StringUtils.isNotBlank(value)) {
+            processParameterList.addAll(Arrays.asList(paramSymbol, value));
+        }
+    }
+
+    private void addCustomParameterIfNotBlank(List<String> processParameterList, String paramSymbol, String value) {
+        if (StringUtils.isNotBlank(value)) {
+            processParameterList.add(paramSymbol + "=" + value);
+        }
     }
 
     public String getReportsFolderPath() {
