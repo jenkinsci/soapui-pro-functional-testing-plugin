@@ -106,7 +106,7 @@ public class JenkinsSoapUIProTestRunnerTest {
     public void validateTooLargeSlmLicenceApiPortForUserAndPasswordMethodTest() {
         // given
         final String authMethod = "USER_AND_PASSWORD";
-        final String port = "12345";
+        final String port = "88888";
 
         // when
         final FormValidation result = validationService.doCheckSlmLicenceApiPort(port, authMethod);
