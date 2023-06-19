@@ -14,6 +14,7 @@ import org.apache.commons.lang.StringUtils;
 import javax.annotation.Nonnull;
 import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
 import java.util.ArrayList;
@@ -130,7 +131,9 @@ class ProcessRunner {
 
         if (shouldSendAnalytics(testrunnerFile)) {
             Properties properties = new Properties();
-            properties.load(ProcessRunner.class.getResourceAsStream(SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO));
+            try(final InputStream propertiesInputStream = ProcessRunner.class.getResourceAsStream(SOAPUI_PRO_FUNCTIONAL_TESTING_PLUGIN_INFO)) {
+                properties.load(propertiesInputStream);
+            }
             String version = properties.getProperty("version", DEFAULT_PLUGIN_VERSION);
             processParameterList.addAll(Arrays.asList("-q", PLUGIN_NAME_FOR_ANALYTICS + "-" + version));
         }
@@ -211,6 +214,8 @@ class ProcessRunner {
                 break;
             case ACCESS_FOR_EVERYONE:
                 processParameterList.add("-DlicenseApiAccessForEveryone=true");
+                break;
+            default:
                 break;
         }
     }
