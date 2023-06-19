@@ -32,7 +32,7 @@ import java.io.PrintStream;
 public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildStep {
 
     private static final int MIN_PORT = 0;
-    private static final int MAX_PORT = 9999;
+    private static final int MAX_PORT = 65535;
     private static final String SLM_LICENCE_ACCESS_KEY = "SLM Licence Access Key";
     private static final String API_KEY = "API KEY";
     private static final String USER_AND_PASSWORD = "User And Password";
