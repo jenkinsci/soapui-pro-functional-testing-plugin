@@ -11,7 +11,12 @@ public class ParameterContainer {
     private String testCaseTags;
     private String projectPassword;
     private String environment;
+    private String authMethod;
+    private String slmLicenceApiHost;
+    private String slmLicenceApiPort;
     private String slmLicenceAccessKey;
+    private String user;
+    private String password;
     private FilePath workspace;
 
     public String getPathToTestrunner() {
@@ -52,6 +57,26 @@ public class ParameterContainer {
 
     public FilePath getWorkspace() {
         return workspace;
+    }
+
+    public String getAuthMethod() {
+        return authMethod;
+    }
+
+    public String getSlmLicenceApiHost() {
+        return slmLicenceApiHost;
+    }
+
+    public String getSlmLicenceApiPort() {
+        return slmLicenceApiPort;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public String getPassword() {
+        return password;
     }
 
     public static class Builder {
@@ -106,8 +131,33 @@ public class ParameterContainer {
             return this;
         }
 
+        public Builder withAuthMethod(String authMethod) {
+            parameterContainer.authMethod = authMethod;
+            return this;
+        }
+
+        public Builder withSlmLicenceApiHost(String slmLicenceApiHost) {
+            parameterContainer.slmLicenceApiHost = slmLicenceApiHost;
+            return this;
+        }
+
+        public Builder withSlmLicenceApiPort(String slmLicenceApiPort) {
+            parameterContainer.slmLicenceApiPort = slmLicenceApiPort;
+            return this;
+        }
+
         public Builder withSlmLicenceAccessKey(String slmLicenceAccessKey) {
             parameterContainer.slmLicenceAccessKey = slmLicenceAccessKey;
+            return this;
+        }
+
+        public Builder withUser(String user) {
+            parameterContainer.user = user;
+            return this;
+        }
+
+        public Builder withPassword(String password) {
+            parameterContainer.password = password;
             return this;
         }
     }
