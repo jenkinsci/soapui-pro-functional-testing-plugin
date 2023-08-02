@@ -24,7 +24,12 @@ The build step has the following settings:
 * **Test Suite Tags** and **Test Case Tags** - Specify which tags must contain the test suite or test case to be run. To create complex conditions, use the `||` (logical OR), `&&` (logical AND) and `!` (logical NOT) operators.
 * **Project Password** - Specifies the encryption password, if you encrypted the entire project or some of its custom properties.
 * **Environment** - Specifies the environment configuration for the test run.
-* **SLM Licence Access Key** - Specifies SLM Licence Access Key (Optional).
+* **License authentication method** - Select License authentication method.
+* **SLM License API Host** - Specifies SLM License API Host.
+* **SLM License API Port** - Specifies SLM License API Port.
+* **SLM License Access Key** - Specifies SLM License Access Key.
+* **Username** - Specifies username.
+* **Password** - Specifies password.
 
 ### Reports
 
@@ -39,6 +44,10 @@ After the build is over, the plugin creates the following reports:
 You can find more information on how to use the plugin in [ReadyAPI documentation](https://support.smartbear.com/readyapi/docs/soapui/running/automating/jenkins.html).
 
 ### Version history
+
+#### Version 1.9 (June 14, 2023)
+
+* *New feature*: Added the possibility to select license authorisation method (File Based, Access Key, Username and Password, Access for everyone) and pass proper parameters for each method.
 
 #### Version 1.8 (May 15, 2023)
 

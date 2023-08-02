@@ -34,9 +34,27 @@
              description="Specifies the environment configuration for the test run.">
         <f:textbox/>
     </f:entry>
-    <f:entry title="SLM Licence Access Key" field="slmLicenceAccessKey"
-             description="Specifies SLM Licence Access Key (Optional)">
+    <f:entry title="License authentication method" field="authMethod" description="Select License authentication method">
+            <select name="authMethod">
+                    <option value="FILE_BASED" selected="${instance.authMethod.equals('FILE_BASED') ? 'true' : null}">File based license</option>
+                    <option value="API_KEY" selected="${instance.authMethod.equals('API_KEY') ? 'true' : null}">API KEY</option>
+                    <option value="USER_AND_PASSWORD" selected="${instance.authMethod.equals('USER_AND_PASSWORD') ? 'true' : null}">User and Password</option>
+                    <option value="ACCESS_FOR_EVERYONE" selected="${instance.authMethod.equals('ACCESS_FOR_EVERYONE') ? 'true' : null}">Access for everyone</option>
+            </select>
+    </f:entry>
+    <f:entry title="SLM License API Host" field="slmLicenceApiHost" description="Specifies SLM License API Host">
         <f:textbox/>
     </f:entry>
-
+    <f:entry title="SLM License API Port" field="slmLicenceApiPort" description="Specifies SLM License API Port">
+        <f:textbox/>
+    </f:entry>
+    <f:entry title="SLM License Access Key" field="slmLicenceAccessKey" description="Specifies SLM License Access Key">
+        <f:textbox/>
+    </f:entry>
+    <f:entry title="Username" field="user" description="Username">
+        <f:textbox/>
+    </f:entry>
+    <f:entry title="Password" field="password" description="Password">
+        <f:password/>
+    </f:entry>
 </j:jelly>
