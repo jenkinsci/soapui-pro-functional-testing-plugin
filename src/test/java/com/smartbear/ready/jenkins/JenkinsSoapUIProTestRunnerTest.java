@@ -18,18 +18,6 @@ public class JenkinsSoapUIProTestRunnerTest {
     }
 
     @Test
-    public void validateEmptySlmLicenceApiHostForUserAndPasswordMethodTest() {
-        // given
-        final String authMethod = "USER_AND_PASSWORD";
-
-        // when
-        final FormValidation result = validationService.doCheckSlmLicenceApiHost("", authMethod);
-
-        // then
-        assertThat(result.kind, is(Kind.ERROR));
-    }
-
-    @Test
     public void validateEmptySlmLicenceApiHostForAccessForEveryoneMethodTest() {
         // given
         final String authMethod = "ACCESS_FOR_EVERYONE";
@@ -51,18 +39,6 @@ public class JenkinsSoapUIProTestRunnerTest {
 
         // then
         assertThat(result.kind, is(Kind.OK));
-    }
-
-    @Test
-    public void validateEmptySlmLicenceApiPortForUserAndPasswordMethodTest() {
-        // given
-        final String authMethod = "USER_AND_PASSWORD";
-
-        // when
-        final FormValidation result = validationService.doCheckSlmLicenceApiPort("", authMethod);
-
-        // then
-        assertThat(result.kind, is(Kind.ERROR));
     }
 
     @Test
@@ -90,9 +66,9 @@ public class JenkinsSoapUIProTestRunnerTest {
     }
 
     @Test
-    public void validateStringSlmLicenceApiPortForUserAndPasswordMethodTest() {
+    public void validateStringSlmLicenceApiPortForAccessForEveryoneMethodTest() {
         // given
-        final String authMethod = "USER_AND_PASSWORD";
+        final String authMethod = "ACCESS_FOR_EVERYONE";
         final String port = "abc";
 
         // when
@@ -103,9 +79,9 @@ public class JenkinsSoapUIProTestRunnerTest {
     }
 
     @Test
-    public void validateTooLargeSlmLicenceApiPortForUserAndPasswordMethodTest() {
+    public void validateTooLargeSlmLicenceApiPortForAccessForEveryoneMethodTest() {
         // given
-        final String authMethod = "USER_AND_PASSWORD";
+        final String authMethod = "ACCESS_FOR_EVERYONE";
         final String port = "88888";
 
         // when
@@ -116,9 +92,9 @@ public class JenkinsSoapUIProTestRunnerTest {
     }
 
     @Test
-    public void validateNegativeSlmLicenceApiPortForUserAndPasswordMethodTest() {
+    public void validateNegativeSlmLicenceApiPortForAccessForEveryoneMethodTest() {
         // given
-        final String authMethod = "USER_AND_PASSWORD";
+        final String authMethod = "ACCESS_FOR_EVERYONE";
         final String port = "-12";
 
         // when
