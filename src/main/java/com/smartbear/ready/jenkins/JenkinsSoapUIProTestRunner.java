@@ -304,9 +304,14 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
 
         public FormValidation doCheckSlmLicenceApiPort(@QueryParameter String value, @QueryParameter String authMethod) {
             final AuthMethod slmAuthMethod = AuthMethod.valueOf(authMethod);
-            if (!isValidPort(value) && slmAuthMethod == AuthMethod.ACCESS_FOR_EVERYONE) {
-                return FormValidation
-                        .error("Please, enter valid SLM Licence API Port for " + ACCESS_FOR_EVERYONE + " authentication method");
+            if (!isValidPort(value)) {
+                if (slmAuthMethod == AuthMethod.ACCESS_FOR_EVERYONE) {
+                    return FormValidation
+                            .error("Please, enter valid SLM Licence API Port for " + ACCESS_FOR_EVERYONE + " authentication method");
+                } else if (StringUtils.isNotEmpty(value)) {
+                    return FormValidation
+                            .error("Please, enter valid SLM Licence API Port");
+                }
             }
             return FormValidation.ok();
         }
