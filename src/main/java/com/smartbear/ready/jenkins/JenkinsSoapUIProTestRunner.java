@@ -38,8 +38,6 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private static final String USER_AND_PASSWORD = "User And Password";
     private static final String USERNAME = "Username";
     private static final String PASSWORD = "Password";
-    private static final String SLM_LICENCE_API_HOST = "SLM Licence API Host";
-    private static final String ACCESS_FOR_EVERYONE = "Access for Everyone";
     private final String pathToTestrunner;
     private final String pathToProjectFile;
     private String testSuite;
@@ -298,19 +296,26 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         }
 
         public FormValidation doCheckSlmLicenceApiHost(@QueryParameter String value, @QueryParameter String authMethod) {
-            return validateEmptyValue(value, AuthMethod.ACCESS_FOR_EVERYONE, authMethod,
-                    SLM_LICENCE_API_HOST, ACCESS_FOR_EVERYONE);
+            final AuthMethod slmAuthMethod = AuthMethod.valueOf(authMethod);
+            if (StringUtils.isEmpty(value)) {
+                switch (slmAuthMethod) {
+                    case USER_AND_PASSWORD:
+                        return FormValidation.error("Please, enter valid SLM Licence API Host for User And Password authentication method");
+                    case ACCESS_FOR_EVERYONE:
+                        return FormValidation.error("Please, enter valid SLM Licence API Host for Access for Everyone authentication method");
+                }
+            }
+            return FormValidation.ok();
         }
 
         public FormValidation doCheckSlmLicenceApiPort(@QueryParameter String value, @QueryParameter String authMethod) {
             final AuthMethod slmAuthMethod = AuthMethod.valueOf(authMethod);
             if (!isValidPort(value)) {
-                if (slmAuthMethod == AuthMethod.ACCESS_FOR_EVERYONE) {
-                    return FormValidation
-                            .error("Please, enter valid SLM Licence API Port for " + ACCESS_FOR_EVERYONE + " authentication method");
-                } else if (StringUtils.isNotEmpty(value)) {
-                    return FormValidation
-                            .error("Please, enter valid SLM Licence API Port");
+                switch (slmAuthMethod) {
+                    case USER_AND_PASSWORD:
+                        return FormValidation.error("Please, enter valid SLM Licence API Port for User And Password authentication method");
+                    case ACCESS_FOR_EVERYONE:
+                        return FormValidation.error("Please, enter valid SLM Licence API Port for Access for Everyone authentication method");
                 }
             }
             return FormValidation.ok();
