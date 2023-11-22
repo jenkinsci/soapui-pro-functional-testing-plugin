@@ -13,6 +13,7 @@ import hudson.model.TaskListener;
 import hudson.tasks.BuildStepDescriptor;
 import hudson.tasks.Builder;
 import hudson.util.FormValidation;
+import hudson.util.ListBoxModel;
 import hudson.util.Secret;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
@@ -274,6 +275,17 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     @Symbol("SoapUIPro")
     public static final class DescriptorImpl extends BuildStepDescriptor<Builder> {
 
+        public ListBoxModel doFillAuthMethodItems() {
+            ListBoxModel items = new ListBoxModel();
+
+            items.add("File based license", "FILE_BASED");
+            items.add("API KEY", "API_KEY");
+            items.add("User and Password", "USER_AND_PASSWORD");
+            items.add("Access for everyone", "ACCESS_FOR_EVERYONE");
+
+            return items;
+        }
+
         public FormValidation doCheckPathToTestrunner(@QueryParameter String value) {
             if (value.length() == 0) {
                 return FormValidation.error("Please, set path to testrunner");
@@ -291,6 +303,14 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         public FormValidation doCheckTestSuite(@QueryParameter String value, @QueryParameter String testCase) {
             if (value.length() == 0 && testCase.length() != 0) {
                 return FormValidation.error("Please, enter a test suite for the specified test case");
+            }
+            return FormValidation.ok();
+        }
+
+        public FormValidation doCheckAuthMethod(@QueryParameter String value, @QueryParameter String slmLicenceApiHost) {
+            final AuthMethod slmAuthMethod = AuthMethod.valueOf(value);
+            if (slmLicenceApiHost.length() == 0 && slmAuthMethod == AuthMethod.USER_AND_PASSWORD) {
+                return FormValidation.error("Username and Password option is only available for on-prem servers");
             }
             return FormValidation.ok();
         }
