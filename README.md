@@ -45,6 +45,10 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 ### Version history
 
+#### Version 1.10 (Nov 20, 2023)
+
+* *New feature*: Update User and Password option (available for onprem SLM only)
+
 #### Version 1.9 (June 14, 2023)
 
 * *New feature*: Added the possibility to select license authorisation method (File Based, Access Key, Username and Password, Access for everyone) and pass proper parameters for each method.

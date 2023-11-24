@@ -176,4 +176,30 @@ public class JenkinsSoapUIProTestRunnerTest {
         // then
         assertThat(result.kind, is(Kind.ERROR));
     }
+
+    @Test
+    public void validateOnPremServerForUserAndPasswordMethodTest() {
+        // given
+        final String authMethod = "USER_AND_PASSWORD";
+        final String slmLicenseApiHost = "localhost";
+
+        // when
+        final FormValidation result = validationService.doCheckAuthMethod(authMethod, slmLicenseApiHost);
+
+        // then
+        assertThat(result.kind, is(Kind.OK));
+    }
+
+    @Test
+    public void validateSmartBearHostedServerForUserAndPasswordMethodTest() {
+        // given
+        final String authMethod = "USER_AND_PASSWORD";
+        final String slmLicenseApiHost = "";
+
+        // when
+        final FormValidation result = validationService.doCheckAuthMethod(authMethod, slmLicenseApiHost);
+
+        // then
+        assertThat(result.kind, is(Kind.ERROR));
+    }
 }
