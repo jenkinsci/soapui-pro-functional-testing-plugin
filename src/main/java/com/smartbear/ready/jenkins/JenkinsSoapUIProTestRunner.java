@@ -39,6 +39,9 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private static final String USER_AND_PASSWORD = "User And Password";
     private static final String USERNAME = "Username";
     private static final String PASSWORD = "Password";
+    private static final String CLIENT_ID = "SLM License Client Id";
+    private static final String CLIENT_SECRET = "SLM License Client Secret";
+    private static final String CLIENT_CREDENTIALS = "Client Credentials";
     private final String pathToTestrunner;
     private final String pathToProjectFile;
     private String testSuite;
@@ -53,6 +56,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private String slmLicenceAccessKey;
     private String user;
     private String password;
+    private String slmLicenseClientId;
+    private String slmLicenseClientSecret;
 
     @DataBoundConstructor
     public JenkinsSoapUIProTestRunner(String pathToTestrunner,
@@ -177,6 +182,24 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.password = password;
     }
 
+    public String getSlmLicenseClientId() {
+        return this.slmLicenseClientId;
+    }
+
+    @DataBoundSetter
+    public void setSlmLicenseClientId(String slmLicenseClientId) {
+        this.slmLicenseClientId = slmLicenseClientId;
+    }
+
+    public String getSlmLicenseClientSecret() {
+        return this.slmLicenseClientSecret;
+    }
+
+    @DataBoundSetter
+    public void setSlmLicenseClientSecret(String slmLicenseClientSecret) {
+        this.slmLicenseClientSecret = slmLicenseClientSecret;
+    }
+
     @Override
     public void perform(@Nonnull Run<?, ?> run, @Nonnull FilePath workspace, @Nonnull Launcher launcher, @Nonnull TaskListener listener) throws InterruptedException, IOException {
         Proc process = null;
@@ -199,6 +222,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withUser(user)
                     .withPassword(password)
                     .withWorkspace(workspace)
+                    .withSlmLicenseClientId(slmLicenseClientId)
+                    .withSlmLicenseClientSecret(slmLicenseClientSecret)
                     .build(), run, launcher, listener);
             if (process == null) {
                 throw new AbortException("Could not start ReadyAPI functional testing.");
@@ -282,6 +307,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
             items.add("API KEY", "API_KEY");
             items.add("User and Password", "USER_AND_PASSWORD");
             items.add("Access for everyone", "ACCESS_FOR_EVERYONE");
+            items.add("Client Credentials", "CLIENT_CREDENTIALS");
 
             return items;
         }
@@ -323,6 +349,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                         return FormValidation.error("Please, enter valid SLM Licence API Host for User And Password authentication method");
                     case ACCESS_FOR_EVERYONE:
                         return FormValidation.error("Please, enter valid SLM Licence API Host for Access for Everyone authentication method");
+                    case CLIENT_CREDENTIALS:
+                        return FormValidation.error("Please, enter valid SLM Licence API Host for Client Credentials authentication method");
                 }
             }
             return FormValidation.ok();
@@ -336,6 +364,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                         return FormValidation.error("Please, enter valid SLM Licence API Port for User And Password authentication method");
                     case ACCESS_FOR_EVERYONE:
                         return FormValidation.error("Please, enter valid SLM Licence API Port for Access for Everyone authentication method");
+                    case CLIENT_CREDENTIALS:
+                        return FormValidation.error("Please, enter valid SLM Licence API Port for Client Credentials authentication method");
                 }
             }
             return FormValidation.ok();
@@ -367,6 +397,16 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         public FormValidation doCheckPassword(@QueryParameter String value, @QueryParameter String authMethod) {
             return validateEmptyValue(value, AuthMethod.USER_AND_PASSWORD, authMethod,
                     PASSWORD, USER_AND_PASSWORD);
+        }
+
+        public FormValidation doCheckSlmLicenseClientId(@QueryParameter String value, @QueryParameter String authMethod) {
+            return validateEmptyValue(value, AuthMethod.CLIENT_CREDENTIALS, authMethod,
+                    CLIENT_ID, CLIENT_CREDENTIALS);
+        }
+
+        public FormValidation doCheckSlmLicenseClientSecret(@QueryParameter String value, @QueryParameter String authMethod) {
+            return validateEmptyValue(value, AuthMethod.CLIENT_CREDENTIALS, authMethod,
+                    CLIENT_SECRET, CLIENT_CREDENTIALS);
         }
 
         private FormValidation validateEmptyValue(final String value, final AuthMethod authMethod,

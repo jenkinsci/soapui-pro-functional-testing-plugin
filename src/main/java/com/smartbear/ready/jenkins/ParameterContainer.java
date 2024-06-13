@@ -18,6 +18,9 @@ public class ParameterContainer {
     private String user;
     private String password;
     private FilePath workspace;
+    private String slmLicenseClientId;
+    private String slmLicenseClientSecret;
+
 
     public String getPathToTestrunner() {
         return pathToTestrunner;
@@ -77,6 +80,14 @@ public class ParameterContainer {
 
     public String getPassword() {
         return password;
+    }
+
+    public String getSlmLicenseClientId() {
+        return this.slmLicenseClientId;
+    }
+
+    public String getSlmLicenseClientSecret() {
+        return this.slmLicenseClientSecret;
     }
 
     public static class Builder {
@@ -158,6 +169,16 @@ public class ParameterContainer {
 
         public Builder withPassword(String password) {
             parameterContainer.password = password;
+            return this;
+        }
+
+        public Builder withSlmLicenseClientId(String slmLicenseClientId) {
+            parameterContainer.slmLicenseClientId = slmLicenseClientId;
+            return this;
+        }
+
+        public Builder withSlmLicenseClientSecret(String slmLicenseClientSecret) {
+            parameterContainer.slmLicenseClientSecret = slmLicenseClientSecret;
             return this;
         }
     }

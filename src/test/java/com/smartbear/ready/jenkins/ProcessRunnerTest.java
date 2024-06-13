@@ -157,4 +157,46 @@ public class ProcessRunnerTest {
         assertThat(processParameterList.size(), is(1));
         assertThat(processParameterList, hasItems("-DlicenseApiAccessForEveryone=true"));
     }
+
+    @Test
+    public void addAuthorisationRelatedParametersForClientCredentialsAuthMethodTest()
+            throws InvocationTargetException, IllegalAccessException {
+        // given
+        List<String> processParameterList = new ArrayList<>();
+        ParameterContainer params = new ParameterContainer.Builder()
+                .withAuthMethod(AuthMethod.CLIENT_CREDENTIALS.name())
+                .withSlmLicenceApiHost("localhost")
+                .withSlmLicenceApiPort("1234")
+                .withSlmLicenseClientId("testId")
+                .withSlmLicenseClientSecret("testSecret")
+                .build();
+
+        // when
+        testedMethod.invoke(processRunner, processParameterList, params);
+
+        // then
+        assertThat(processParameterList.size(), is(6));
+        assertThat(processParameterList,
+                hasItems("-DlicenseApiHost=localhost", "-DlicenseApiPort=1234", "-ci", "testId", "-cs", "testSecret"));
+    }
+
+    @Test
+    public void addAuthorisationRelatedParametersWithoutHostAndPortForClientCredentialsAuthMethodTest()
+            throws InvocationTargetException, IllegalAccessException {
+        // given
+        List<String> processParameterList = new ArrayList<>();
+        ParameterContainer params = new ParameterContainer.Builder()
+                .withAuthMethod(AuthMethod.CLIENT_CREDENTIALS.name())
+                .withSlmLicenseClientId("testId")
+                .withSlmLicenseClientSecret("testSecret")
+                .build();
+
+        // when
+        testedMethod.invoke(processRunner, processParameterList, params);
+
+        // then
+        assertThat(processParameterList.size(), is(4));
+        assertThat(processParameterList,
+                hasItems("-ci", "testId", "-cs", "testSecret"));
+    }
 }
