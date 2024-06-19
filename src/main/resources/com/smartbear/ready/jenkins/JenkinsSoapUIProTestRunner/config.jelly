@@ -52,4 +52,10 @@
     <f:entry title="Password" field="password" description="Password">
         <f:password/>
     </f:entry>
+    <f:entry title="SLM License Client Id" field="slmLicenseClientId" description="Specifies SLM License Client Id">
+        <f:textbox/>
+    </f:entry>
+    <f:entry title="SLM License Client Secret" field="slmLicenseClientSecret" description="Specifies SLM License Client Secret">
+        <f:textbox/>
+    </f:entry>
 </j:jelly>

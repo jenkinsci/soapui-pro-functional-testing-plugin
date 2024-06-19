@@ -28,6 +28,8 @@ The build step has the following settings:
 * **SLM License API Host** - Specifies SLM License API Host.
 * **SLM License API Port** - Specifies SLM License API Port.
 * **SLM License Access Key** - Specifies SLM License Access Key.
+* **SLM License Client Id** - Specifies SLM License Client Id.
+* **SLM License Client Secret** - Specifies SLM License Client Secret.
 * **Username** - Specifies username.
 * **Password** - Specifies password.
 

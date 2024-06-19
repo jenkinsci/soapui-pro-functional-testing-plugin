@@ -215,6 +215,10 @@ class ProcessRunner {
             case ACCESS_FOR_EVERYONE:
                 processParameterList.add("-DlicenseApiAccessForEveryone=true");
                 break;
+            case CLIENT_CREDENTIALS:
+                addParameterIfNotBlank(processParameterList, "-ci", params.getSlmLicenseClientId());
+                addParameterIfNotBlank(processParameterList, "-cs", params.getSlmLicenseClientSecret());
+                break;
             default:
                 break;
         }
