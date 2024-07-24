@@ -47,6 +47,10 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 ### Version history
 
+#### Version 1.11 (Jul 24, 2024)
+
+* *New feature*: New Authorization method - Client Credentials
+
 #### Version 1.10 (Nov 20, 2023)
 
 * *New feature*: Update User and Password option (available for onprem SLM only)
