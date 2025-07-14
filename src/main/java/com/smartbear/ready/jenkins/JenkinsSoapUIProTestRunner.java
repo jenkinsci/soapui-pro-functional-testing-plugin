@@ -129,7 +129,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     }
 
     public String getSlmLicenceAccessKey() {
-        return Secret.toString(slmLicenceAccessKey);
+        return slmLicenceAccessKey != null ? Secret.toString(slmLicenceAccessKey) : null;
     }
 
     @DataBoundSetter
@@ -174,7 +174,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     }
 
     public String getPassword() {
-        return password;
+        return password != null ? Secret.toString(password) : null;
     }
 
     @DataBoundSetter
@@ -192,7 +192,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     }
 
     public String getSlmLicenseClientSecret() {
-        return this.slmLicenseClientSecret;
+        return this.slmLicenseClientSecret != null ? Secret.toString(this.slmLicenseClientSecret) : null;
     }
 
     @DataBoundSetter
@@ -213,7 +213,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withTestCase(testCase)
                     .withTestSuiteTags(testSuiteTags)
                     .withTestCaseTags(testCaseTags)
-                    .withProjectPassword(Secret.toString(getProjectPassword()))
+                    .withProjectPassword(projectPassword != null ? Secret.toString(projectPassword) : null)
                     .withEnvironment(environment)
                     .withAuthMethod(authMethod)
                     .withSlmLicenceApiHost(slmLicenceApiHost)
