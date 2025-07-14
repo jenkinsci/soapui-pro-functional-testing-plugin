@@ -129,7 +129,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     }
 
     public String getSlmLicenceAccessKey() {
-        return slmLicenceAccessKey;
+        return Secret.toString(slmLicenceAccessKey);
     }
 
     @DataBoundSetter
