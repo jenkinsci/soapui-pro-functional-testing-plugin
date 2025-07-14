@@ -44,7 +44,7 @@
         <f:textbox/>
     </f:entry>
     <f:entry title="SLM License Access Key" field="slmLicenceAccessKey" description="Specifies SLM License Access Key">
-        <f:textbox/>
+        <f:password autocomplete="new-password"/>
     </f:entry>
     <f:entry title="Username" field="user" description="Username">
         <f:textbox/>
