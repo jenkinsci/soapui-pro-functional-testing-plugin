@@ -55,9 +55,9 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private String slmLicenceApiPort;
     private String slmLicenceAccessKey;
     private String user;
-    private String password;
-    private String slmLicenseClientId;
-    private String slmLicenseClientSecret;
+    private Secret password;
+    private Secret slmLicenseClientId;
+    private Secret slmLicenseClientSecret;
 
     @DataBoundConstructor
     public JenkinsSoapUIProTestRunner(String pathToTestrunner,
