@@ -53,11 +53,11 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private String authMethod;
     private String slmLicenceApiHost;
     private String slmLicenceApiPort;
-    private String slmLicenceAccessKey;
+    private Secret slmLicenceAccessKey;
     private String user;
-    private String password;
+    private Secret password;
     private String slmLicenseClientId;
-    private String slmLicenseClientSecret;
+    private Secret slmLicenseClientSecret;
 
     @DataBoundConstructor
     public JenkinsSoapUIProTestRunner(String pathToTestrunner,
@@ -110,6 +110,10 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.testCaseTags = tags;
     }
 
+    public String getProjectPasswordAsString() {
+        return projectPassword != null ? Secret.toString(projectPassword) : null;
+    }
+
     public Secret getProjectPassword() {
         return projectPassword;
     }
@@ -128,13 +132,17 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.environment = environment;
     }
 
-    public String getSlmLicenceAccessKey() {
+    public String getSlmLicenceAccessKeyAsString() {
+        return slmLicenceAccessKey != null ? Secret.toString(slmLicenceAccessKey) : null;
+    }
+
+    public Secret getSlmLicenceAccessKey() {
         return slmLicenceAccessKey;
     }
 
     @DataBoundSetter
     public void setSlmLicenceAccessKey(String slmLicenceAccessKey) {
-        this.slmLicenceAccessKey = slmLicenceAccessKey;
+        this.slmLicenceAccessKey = Secret.fromString(slmLicenceAccessKey);
     }
 
     public String getAuthMethod() {
@@ -173,13 +181,17 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.user = user;
     }
 
-    public String getPassword() {
+    public String getPasswordAsString() {
+        return password != null ? Secret.toString(password) : null;
+    }
+
+    public Secret getPassword() {
         return password;
     }
 
     @DataBoundSetter
     public void setPassword(String password) {
-        this.password = password;
+        this.password = Secret.fromString(password);
     }
 
     public String getSlmLicenseClientId() {
@@ -191,13 +203,17 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.slmLicenseClientId = slmLicenseClientId;
     }
 
-    public String getSlmLicenseClientSecret() {
-        return this.slmLicenseClientSecret;
+    public String getSlmLicenseClientSecretAsString() {
+        return this.slmLicenseClientSecret != null ? Secret.toString(this.slmLicenseClientSecret) : null;
+    }
+
+    public Secret getSlmLicenseClientSecret() {
+        return slmLicenseClientSecret;
     }
 
     @DataBoundSetter
     public void setSlmLicenseClientSecret(String slmLicenseClientSecret) {
-        this.slmLicenseClientSecret = slmLicenseClientSecret;
+        this.slmLicenseClientSecret = Secret.fromString(slmLicenseClientSecret);
     }
 
     @Override
@@ -213,17 +229,17 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withTestCase(testCase)
                     .withTestSuiteTags(testSuiteTags)
                     .withTestCaseTags(testCaseTags)
-                    .withProjectPassword(Secret.toString(getProjectPassword()))
+                    .withProjectPassword(getProjectPasswordAsString())
                     .withEnvironment(environment)
                     .withAuthMethod(authMethod)
                     .withSlmLicenceApiHost(slmLicenceApiHost)
                     .withSlmLicenceApiPort(slmLicenceApiPort)
-                    .withSlmLicenceAccessKey(slmLicenceAccessKey)
+                    .withSlmLicenceAccessKey(getSlmLicenceAccessKeyAsString())
                     .withUser(user)
-                    .withPassword(password)
+                    .withPassword(getPasswordAsString())
                     .withWorkspace(workspace)
                     .withSlmLicenseClientId(slmLicenseClientId)
-                    .withSlmLicenseClientSecret(slmLicenseClientSecret)
+                    .withSlmLicenseClientSecret(getSlmLicenseClientSecretAsString())
                     .build(), run, launcher, listener);
             if (process == null) {
                 throw new AbortException("Could not start ReadyAPI functional testing.");
