@@ -52,16 +52,16 @@
 
     <developers>
         <developer>
-            <id>olesia_mitina</id>
-            <name>Olesia Mitina</name>
+            <id>rafal_mroczkowski_smartbear</id>
+            <name>Rafal Mroczkowski</name>
             <organization>SmartBear Software</organization>
-            <email>olesia.mitina@smartbear.com</email>
+            <email>rafal.mroczkowski@smartbear.com</email>
         </developer>
         <developer>
-            <id>ilyaavdeev</id>
-            <name>Ilya Avdeev</name>
+            <id>przemyslawniedorozow</id>
+            <name>Przemyslaw Niedorozow</name>
             <organization>SmartBear Software</organization>
-            <email>Ilya.Avdeev@smartbear.com</email>
+            <email>przemyslaw.niedorozow@smartbear.com</email>
         </developer>
     </developers>
 
