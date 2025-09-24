@@ -48,20 +48,20 @@
         <developerConnection>scm:git:ssh://git@github.com/jenkinsci/soapui-pro-functional-testing-plugin.git</developerConnection>
         <url>https://github.com/jenkinsci/soapui-pro-functional-testing-plugin</url>
         <tag>1.10</tag>
-    </scm>
+  </scm>
 
     <developers>
         <developer>
-            <id>rafal_mroczkowski_smartbear</id>
-            <name>Rafal Mroczkowski</name>
+            <id>olesia_mitina</id>
+            <name>Olesia Mitina</name>
             <organization>SmartBear Software</organization>
-            <email>rafal.mroczkowski@smartbear.com</email>
+            <email>olesia.mitina@smartbear.com</email>
         </developer>
         <developer>
-            <id>przemyslawniedorozow</id>
-            <name>Przemyslaw Niedorozow</name>
+            <id>ilyaavdeev</id>
+            <name>Ilya Avdeev</name>
             <organization>SmartBear Software</organization>
-            <email>przemyslaw.niedorozow@smartbear.com</email>
+            <email>Ilya.Avdeev@smartbear.com</email>
         </developer>
     </developers>
 

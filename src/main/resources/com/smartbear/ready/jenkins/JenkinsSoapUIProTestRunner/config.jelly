@@ -35,7 +35,7 @@
         <f:textbox/>
     </f:entry>
     <f:entry title="License authentication method" field="authMethod" description="Select License authentication method">
-        <f:select default="API KEY" />
+        <f:select />
     </f:entry>
     <f:entry title="SLM License API Host" field="slmLicenceApiHost" description="Specifies SLM License API Host">
         <f:textbox/>
@@ -45,6 +45,12 @@
     </f:entry>
     <f:entry title="SLM License Access Key" field="slmLicenceAccessKey" description="Specifies SLM License Access Key">
         <f:textbox/>
+    </f:entry>
+    <f:entry title="Username" field="user" description="Username">
+        <f:textbox/>
+    </f:entry>
+    <f:entry title="Password" field="password" description="Password">
+        <f:password/>
     </f:entry>
     <f:entry title="SLM License Client Id" field="slmLicenseClientId" description="Specifies SLM License Client Id">
         <f:textbox/>
