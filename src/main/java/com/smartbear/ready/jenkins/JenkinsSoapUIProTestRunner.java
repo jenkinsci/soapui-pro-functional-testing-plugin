@@ -34,14 +34,14 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
 
     private static final int MIN_PORT = 0;
     private static final int MAX_PORT = 65535;
-    private static final String SLM_LICENCE_ACCESS_KEY = "SLM Licence Access Key";
+    private static final String SLM_LICENCE_ACCESS_KEY = "Access Key";
+    private static final String API_HOST = "API Host";
+    private static final String API_PORT = "API Port";
     private static final String API_KEY = "API KEY";
-    private static final String USER_AND_PASSWORD = "User And Password";
-    private static final String USERNAME = "Username";
-    private static final String PASSWORD = "Password";
-    private static final String CLIENT_ID = "SLM License Client Id";
-    private static final String CLIENT_SECRET = "SLM License Client Secret";
+    private static final String CLIENT_ID = "Client Id";
+    private static final String CLIENT_SECRET = "Client Secret";
     private static final String CLIENT_CREDENTIALS = "Client Credentials";
+    private static final String ERROR_INFO = "Please, enter valid SLM %s for %s authentication method";
     private final String pathToTestrunner;
     private final String pathToProjectFile;
     private String testSuite;
@@ -54,8 +54,6 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private String slmLicenceApiHost;
     private String slmLicenceApiPort;
     private String slmLicenceAccessKey;
-    private String user;
-    private String password;
     private String slmLicenseClientId;
     private String slmLicenseClientSecret;
 
@@ -164,24 +162,6 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.slmLicenceApiPort = slmLicenceApiPort;
     }
 
-    public String getUser() {
-        return user;
-    }
-
-    @DataBoundSetter
-    public void setUser(String user) {
-        this.user = user;
-    }
-
-    public String getPassword() {
-        return password;
-    }
-
-    @DataBoundSetter
-    public void setPassword(String password) {
-        this.password = password;
-    }
-
     public String getSlmLicenseClientId() {
         return this.slmLicenseClientId;
     }
@@ -219,8 +199,6 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withSlmLicenceApiHost(slmLicenceApiHost)
                     .withSlmLicenceApiPort(slmLicenceApiPort)
                     .withSlmLicenceAccessKey(slmLicenceAccessKey)
-                    .withUser(user)
-                    .withPassword(password)
                     .withWorkspace(workspace)
                     .withSlmLicenseClientId(slmLicenseClientId)
                     .withSlmLicenseClientSecret(slmLicenseClientSecret)
@@ -303,11 +281,9 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         public ListBoxModel doFillAuthMethodItems() {
             ListBoxModel items = new ListBoxModel();
 
-            items.add("File based license", "FILE_BASED");
-            items.add("API KEY", "API_KEY");
-            items.add("User and Password", "USER_AND_PASSWORD");
-            items.add("Access for everyone", "ACCESS_FOR_EVERYONE");
-            items.add("Client Credentials", "CLIENT_CREDENTIALS");
+            items.add(AuthMethod.API_KEY.getDisplayName());
+            items.add(AuthMethod.ACCESS_FOR_EVERYONE.getDisplayName());
+            items.add(AuthMethod.CLIENT_CREDENTIALS.getDisplayName());
 
             return items;
         }
@@ -334,38 +310,34 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         }
 
         public FormValidation doCheckAuthMethod(@QueryParameter String value, @QueryParameter String slmLicenceApiHost) {
-            final AuthMethod slmAuthMethod = AuthMethod.valueOf(value);
-            if (slmLicenceApiHost.length() == 0 && slmAuthMethod == AuthMethod.USER_AND_PASSWORD) {
-                return FormValidation.error("Username and Password option is only available for on-prem servers");
-            }
             return FormValidation.ok();
         }
 
         public FormValidation doCheckSlmLicenceApiHost(@QueryParameter String value, @QueryParameter String authMethod) {
-            final AuthMethod slmAuthMethod = AuthMethod.valueOf(authMethod);
+            final AuthMethod slmAuthMethod = AuthMethod.getValue(authMethod);
             if (StringUtils.isEmpty(value)) {
                 switch (slmAuthMethod) {
-                    case USER_AND_PASSWORD:
-                        return FormValidation.error("Please, enter valid SLM Licence API Host for User And Password authentication method");
                     case ACCESS_FOR_EVERYONE:
-                        return FormValidation.error("Please, enter valid SLM Licence API Host for Access for Everyone authentication method");
+                        return FormValidation.error(String.format(ERROR_INFO, API_HOST, AuthMethod.ACCESS_FOR_EVERYONE.getDisplayName()));
                     case CLIENT_CREDENTIALS:
-                        return FormValidation.error("Please, enter valid SLM Licence API Host for Client Credentials authentication method");
+                        return FormValidation.error(String.format(ERROR_INFO, API_HOST, AuthMethod.CLIENT_CREDENTIALS.getDisplayName()));
+                    case API_KEY:
+                        return FormValidation.error(String.format(ERROR_INFO, API_HOST, AuthMethod.API_KEY.getDisplayName()));
                 }
             }
             return FormValidation.ok();
         }
 
         public FormValidation doCheckSlmLicenceApiPort(@QueryParameter String value, @QueryParameter String authMethod) {
-            final AuthMethod slmAuthMethod = AuthMethod.valueOf(authMethod);
+            final AuthMethod slmAuthMethod = AuthMethod.getValue(authMethod);
             if (!isValidPort(value)) {
                 switch (slmAuthMethod) {
-                    case USER_AND_PASSWORD:
-                        return FormValidation.error("Please, enter valid SLM Licence API Port for User And Password authentication method");
                     case ACCESS_FOR_EVERYONE:
-                        return FormValidation.error("Please, enter valid SLM Licence API Port for Access for Everyone authentication method");
+                        return FormValidation.error(String.format(ERROR_INFO, API_PORT, AuthMethod.ACCESS_FOR_EVERYONE.getDisplayName()));
                     case CLIENT_CREDENTIALS:
-                        return FormValidation.error("Please, enter valid SLM Licence API Port for Client Credentials authentication method");
+                        return FormValidation.error(String.format(ERROR_INFO, API_PORT, AuthMethod.CLIENT_CREDENTIALS.getDisplayName()));
+                    case API_KEY:
+                        return FormValidation.error(String.format(ERROR_INFO, API_PORT, AuthMethod.API_KEY.getDisplayName()));
                 }
             }
             return FormValidation.ok();
@@ -379,42 +351,31 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
             try {
                 final int portNumber = Integer.parseInt(port);
                 return portNumber > MIN_PORT && portNumber <= MAX_PORT;
-            } catch(NumberFormatException e) {
+            } catch (NumberFormatException e) {
                 return false;
             }
         }
 
         public FormValidation doCheckSlmLicenceAccessKey(@QueryParameter String value, @QueryParameter String authMethod) {
             return validateEmptyValue(value, AuthMethod.API_KEY, authMethod,
-                    SLM_LICENCE_ACCESS_KEY, API_KEY);
-        }
-
-        public FormValidation doCheckUser(@QueryParameter String value, @QueryParameter String authMethod) {
-            return validateEmptyValue(value, AuthMethod.USER_AND_PASSWORD, authMethod,
-                    USERNAME, USER_AND_PASSWORD);
-        }
-
-        public FormValidation doCheckPassword(@QueryParameter String value, @QueryParameter String authMethod) {
-            return validateEmptyValue(value, AuthMethod.USER_AND_PASSWORD, authMethod,
-                    PASSWORD, USER_AND_PASSWORD);
+                    CLIENT_ID);
         }
 
         public FormValidation doCheckSlmLicenseClientId(@QueryParameter String value, @QueryParameter String authMethod) {
             return validateEmptyValue(value, AuthMethod.CLIENT_CREDENTIALS, authMethod,
-                    CLIENT_ID, CLIENT_CREDENTIALS);
+                    CLIENT_ID);
         }
 
         public FormValidation doCheckSlmLicenseClientSecret(@QueryParameter String value, @QueryParameter String authMethod) {
             return validateEmptyValue(value, AuthMethod.CLIENT_CREDENTIALS, authMethod,
-                    CLIENT_SECRET, CLIENT_CREDENTIALS);
+                    CLIENT_SECRET);
         }
 
         private FormValidation validateEmptyValue(final String value, final AuthMethod authMethod,
-                                                  final String selectedAuthMethod, final String fieldName,
-                                                  final String authMethodName) {
-            final AuthMethod slmAuthMethod = AuthMethod.valueOf(selectedAuthMethod);
+                                                  final String selectedAuthMethod, final String fieldName) {
+            final AuthMethod slmAuthMethod = AuthMethod.getValue(selectedAuthMethod);
             if (StringUtils.isEmpty(value) && authMethod.equals(slmAuthMethod)) {
-                return FormValidation.error("Please, enter " + fieldName + " for " + authMethodName + " authentication method");
+                return FormValidation.error(String.format(ERROR_INFO, fieldName, slmAuthMethod.getDisplayName()));
             }
             return FormValidation.ok();
         }

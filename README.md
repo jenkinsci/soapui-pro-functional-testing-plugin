@@ -30,8 +30,6 @@ The build step has the following settings:
 * **SLM License Access Key** - Specifies SLM License Access Key.
 * **SLM License Client Id** - Specifies SLM License Client Id.
 * **SLM License Client Secret** - Specifies SLM License Client Secret.
-* **Username** - Specifies username.
-* **Password** - Specifies password.
 
 ### Reports
 
@@ -46,6 +44,10 @@ After the build is over, the plugin creates the following reports:
 You can find more information on how to use the plugin in [ReadyAPI documentation](https://support.smartbear.com/readyapi/docs/soapui/running/automating/jenkins.html).
 
 ### Version history
+
+#### Version 1.12 (Sep 24, 2025)
+
+* *Removed*: File based authentication method and Username and Password authentication method has been removed.
 
 #### Version 1.11 (Jul 24, 2024)
 
