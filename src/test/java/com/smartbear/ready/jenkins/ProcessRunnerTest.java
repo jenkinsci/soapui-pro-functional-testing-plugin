@@ -26,22 +26,6 @@ public class ProcessRunnerTest {
     }
 
     @Test
-    public void addAuthorisationRelatedParametersForFileBasedAuthMethodTest()
-            throws InvocationTargetException, IllegalAccessException {
-        // given
-        List<String> processParameterList = new ArrayList<>();
-        ParameterContainer params = new ParameterContainer.Builder()
-                .withAuthMethod("FILE_BASED")
-                .build();
-
-        // when
-        testedMethod.invoke(processRunner, processParameterList, params);
-
-        // then
-        assertThat(processParameterList.size(), is(0));
-    }
-
-    @Test
     public void addAuthorisationRelatedParametersForApiKeyAuthMethodTest()
             throws InvocationTargetException, IllegalAccessException {
         // given
@@ -77,48 +61,6 @@ public class ProcessRunnerTest {
         // then
         assertThat(processParameterList.size(), is(2));
         assertThat(processParameterList, hasItems("-K", "SLM_API_KEY"));
-    }
-
-    @Test
-    public void addAuthorisationRelatedParametersForUserAndPasswordAuthMethodTest()
-            throws InvocationTargetException, IllegalAccessException {
-        // given
-        List<String> processParameterList = new ArrayList<>();
-        ParameterContainer params = new ParameterContainer.Builder()
-                .withAuthMethod("USER_AND_PASSWORD")
-                .withSlmLicenceApiHost("localhost")
-                .withSlmLicenceApiPort("1234")
-                .withUser("user")
-                .withPassword("password")
-                .build();
-
-        // when
-        testedMethod.invoke(processRunner, processParameterList, params);
-
-        // then
-        assertThat(processParameterList.size(), is(6));
-        assertThat(processParameterList,
-                hasItems("-DlicenseApiHost=localhost", "-DlicenseApiPort=1234", "-U", "user", "-V", "password"));
-    }
-
-    @Test
-    public void addAuthorisationRelatedParametersWithoutHostAndPortForUserAndPasswordAuthMethodTest()
-            throws InvocationTargetException, IllegalAccessException {
-        // given
-        List<String> processParameterList = new ArrayList<>();
-        ParameterContainer params = new ParameterContainer.Builder()
-                .withAuthMethod("USER_AND_PASSWORD")
-                .withUser("user")
-                .withPassword("password")
-                .build();
-
-        // when
-        testedMethod.invoke(processRunner, processParameterList, params);
-
-        // then
-        assertThat(processParameterList.size(), is(4));
-        assertThat(processParameterList,
-                hasItems("-U", "user", "-V", "password"));
     }
 
     @Test

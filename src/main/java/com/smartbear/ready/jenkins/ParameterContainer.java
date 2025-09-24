@@ -15,8 +15,6 @@ public class ParameterContainer {
     private String slmLicenceApiHost;
     private String slmLicenceApiPort;
     private String slmLicenceAccessKey;
-    private String user;
-    private String password;
     private FilePath workspace;
     private String slmLicenseClientId;
     private String slmLicenseClientSecret;
@@ -72,14 +70,6 @@ public class ParameterContainer {
 
     public String getSlmLicenceApiPort() {
         return slmLicenceApiPort;
-    }
-
-    public String getUser() {
-        return user;
-    }
-
-    public String getPassword() {
-        return password;
     }
 
     public String getSlmLicenseClientId() {
@@ -159,16 +149,6 @@ public class ParameterContainer {
 
         public Builder withSlmLicenceAccessKey(String slmLicenceAccessKey) {
             parameterContainer.slmLicenceAccessKey = slmLicenceAccessKey;
-            return this;
-        }
-
-        public Builder withUser(String user) {
-            parameterContainer.user = user;
-            return this;
-        }
-
-        public Builder withPassword(String password) {
-            parameterContainer.password = password;
             return this;
         }
 
