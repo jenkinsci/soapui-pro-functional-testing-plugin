@@ -8,6 +8,8 @@ import java.lang.reflect.Method;
 import java.util.ArrayList;
 import java.util.List;
 
+import static com.smartbear.ready.jenkins.AuthMethod.ACCESS_FOR_EVERYONE;
+import static com.smartbear.ready.jenkins.AuthMethod.API_KEY;
 import static org.hamcrest.CoreMatchers.is;
 import static org.hamcrest.Matchers.hasItems;
 import static org.junit.Assert.*;
@@ -31,7 +33,7 @@ public class ProcessRunnerTest {
         // given
         List<String> processParameterList = new ArrayList<>();
         ParameterContainer params = new ParameterContainer.Builder()
-                .withAuthMethod("API_KEY")
+                .withAuthMethod(API_KEY.getDisplayName())
                 .withSlmLicenceApiHost("localhost")
                 .withSlmLicenceApiPort("1234")
                 .withSlmLicenceAccessKey("SLM_API_KEY")
@@ -51,7 +53,7 @@ public class ProcessRunnerTest {
         // given
         List<String> processParameterList = new ArrayList<>();
         ParameterContainer params = new ParameterContainer.Builder()
-                .withAuthMethod("API_KEY")
+                .withAuthMethod(API_KEY.getDisplayName())
                 .withSlmLicenceAccessKey("SLM_API_KEY")
                 .build();
 
@@ -69,7 +71,7 @@ public class ProcessRunnerTest {
         // given
         List<String> processParameterList = new ArrayList<>();
         ParameterContainer params = new ParameterContainer.Builder()
-                .withAuthMethod("ACCESS_FOR_EVERYONE")
+                .withAuthMethod(ACCESS_FOR_EVERYONE.getDisplayName())
                 .withSlmLicenceApiHost("localhost")
                 .withSlmLicenceApiPort("1234")
                 .build();
@@ -89,7 +91,7 @@ public class ProcessRunnerTest {
         // given
         List<String> processParameterList = new ArrayList<>();
         ParameterContainer params = new ParameterContainer.Builder()
-                .withAuthMethod("ACCESS_FOR_EVERYONE")
+                .withAuthMethod(ACCESS_FOR_EVERYONE.getDisplayName())
                 .build();
 
         // when
@@ -106,7 +108,7 @@ public class ProcessRunnerTest {
         // given
         List<String> processParameterList = new ArrayList<>();
         ParameterContainer params = new ParameterContainer.Builder()
-                .withAuthMethod(AuthMethod.CLIENT_CREDENTIALS.name())
+                .withAuthMethod(AuthMethod.CLIENT_CREDENTIALS.getDisplayName())
                 .withSlmLicenceApiHost("localhost")
                 .withSlmLicenceApiPort("1234")
                 .withSlmLicenseClientId("testId")
@@ -128,7 +130,7 @@ public class ProcessRunnerTest {
         // given
         List<String> processParameterList = new ArrayList<>();
         ParameterContainer params = new ParameterContainer.Builder()
-                .withAuthMethod(AuthMethod.CLIENT_CREDENTIALS.name())
+                .withAuthMethod(AuthMethod.CLIENT_CREDENTIALS.getDisplayName())
                 .withSlmLicenseClientId("testId")
                 .withSlmLicenseClientSecret("testSecret")
                 .build();
