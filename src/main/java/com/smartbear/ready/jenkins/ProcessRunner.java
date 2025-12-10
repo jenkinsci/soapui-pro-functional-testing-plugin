@@ -195,7 +195,7 @@ class ProcessRunner {
     }
 
     private void addAuthorisationRelatedParameters(List<String> processParameterList, ParameterContainer params) {
-        AuthMethod authMethod = AuthMethod.valueOf(params.getAuthMethod());
+        AuthMethod authMethod = AuthMethod.getValue(params.getAuthMethod());
 
         addCustomParameterIfNotBlank(processParameterList, "-DlicenseApiHost", params.getSlmLicenceApiHost());
         addCustomParameterIfNotBlank(processParameterList, "-DlicenseApiPort", params.getSlmLicenceApiPort());
