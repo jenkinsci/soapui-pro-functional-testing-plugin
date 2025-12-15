@@ -42,6 +42,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private static final String CLIENT_SECRET = "Client Secret";
     private static final String CLIENT_CREDENTIALS = "Client Credentials";
     private static final String ERROR_INFO = "Please, enter valid SLM %s for %s authentication method";
+    private static final String NOT_EMPTY_VALUE_ERROR_INFO = "Field '%s' must be empty for %s authentication method";
+    private static final String API_KEY_WARNING_MESSAGE = "Required when using license from SLM Onpremise License Server. Please enter valid %s for %s Authentication Method";
     private final String pathToTestrunner;
     private final String pathToProjectFile;
     private String testSuite;
@@ -322,7 +324,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     case CLIENT_CREDENTIALS:
                         return FormValidation.error(String.format(ERROR_INFO, API_HOST, AuthMethod.CLIENT_CREDENTIALS.getDisplayName()));
                     case API_KEY:
-                        return FormValidation.error(String.format(ERROR_INFO, API_HOST, AuthMethod.API_KEY.getDisplayName()));
+                        return FormValidation.warning(String.format(API_KEY_WARNING_MESSAGE, API_HOST, AuthMethod.API_KEY.getDisplayName()));
                 }
             }
             return FormValidation.ok();
@@ -337,7 +339,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     case CLIENT_CREDENTIALS:
                         return FormValidation.error(String.format(ERROR_INFO, API_PORT, AuthMethod.CLIENT_CREDENTIALS.getDisplayName()));
                     case API_KEY:
-                        return FormValidation.error(String.format(ERROR_INFO, API_PORT, AuthMethod.API_KEY.getDisplayName()));
+                        return FormValidation.warning(String.format(API_KEY_WARNING_MESSAGE, API_PORT, AuthMethod.API_KEY.getDisplayName()));
                 }
             }
             return FormValidation.ok();
@@ -357,16 +359,43 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         }
 
         public FormValidation doCheckSlmLicenceAccessKey(@QueryParameter String value, @QueryParameter String authMethod) {
+            final AuthMethod slmAuthMethod = AuthMethod.getValue(authMethod);
+            if (StringUtils.isNotEmpty(value)) {
+                switch (slmAuthMethod) {
+                    case ACCESS_FOR_EVERYONE:
+                        return FormValidation.error(String.format(NOT_EMPTY_VALUE_ERROR_INFO, API_KEY, slmAuthMethod.getDisplayName()));
+                    case CLIENT_CREDENTIALS:
+                        return FormValidation.error(String.format(NOT_EMPTY_VALUE_ERROR_INFO, API_KEY, slmAuthMethod.getDisplayName()));
+                }
+            }
             return validateEmptyValue(value, AuthMethod.API_KEY, authMethod,
-                    CLIENT_ID);
+                CLIENT_ID);
         }
 
         public FormValidation doCheckSlmLicenseClientId(@QueryParameter String value, @QueryParameter String authMethod) {
+            final AuthMethod slmAuthMethod = AuthMethod.getValue(authMethod);
+            if (StringUtils.isNotEmpty(value)) {
+                switch (slmAuthMethod) {
+                    case API_KEY:
+                        return FormValidation.error(String.format(NOT_EMPTY_VALUE_ERROR_INFO, CLIENT_ID, slmAuthMethod.getDisplayName()));
+                    case ACCESS_FOR_EVERYONE:
+                        return FormValidation.error(String.format(NOT_EMPTY_VALUE_ERROR_INFO, CLIENT_ID, slmAuthMethod.getDisplayName()));
+                }
+            }
             return validateEmptyValue(value, AuthMethod.CLIENT_CREDENTIALS, authMethod,
                     CLIENT_ID);
         }
 
         public FormValidation doCheckSlmLicenseClientSecret(@QueryParameter String value, @QueryParameter String authMethod) {
+            final AuthMethod slmAuthMethod = AuthMethod.getValue(authMethod);
+            if (StringUtils.isNotEmpty(value)) {
+                switch (slmAuthMethod) {
+                    case API_KEY:
+                        return FormValidation.error(String.format(NOT_EMPTY_VALUE_ERROR_INFO, CLIENT_SECRET, slmAuthMethod.getDisplayName()));
+                    case ACCESS_FOR_EVERYONE:
+                        return FormValidation.error(String.format(NOT_EMPTY_VALUE_ERROR_INFO, CLIENT_SECRET, slmAuthMethod.getDisplayName()));
+                }
+            }
             return validateEmptyValue(value, AuthMethod.CLIENT_CREDENTIALS, authMethod,
                     CLIENT_SECRET);
         }
