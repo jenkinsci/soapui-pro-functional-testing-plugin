@@ -45,6 +45,10 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 ### Version history
 
+#### Version 1.13 (Dec 15, 2025)
+
+* *Fixed*: API KEY authentication method and form validation.
+
 #### Version 1.12 (Sep 22, 2025)
 
 * *Removed*: File based, Username and Password authentication method.
