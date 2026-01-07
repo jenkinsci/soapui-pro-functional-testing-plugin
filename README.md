@@ -48,6 +48,7 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 #### Version 1.13 (Dec 15, 2025)
 
 * *Fixed*: API KEY authentication method and form validation.
+* **BREAKING CHANGE**: The `authMethod` parameter format changed from `'API_KEY'` (with underscore) to `'API KEY'` (with space). See [MIGRATION.md](MIGRATION.md) for migration instructions.
 
 #### Version 1.12 (Sep 22, 2025)
 
