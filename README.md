@@ -45,6 +45,10 @@ You can find more information on how to use the plugin in [ReadyAPI documentatio
 
 ### Version history
 
+#### Version 1.14 (Feb 13, 2026)
+
+* *Fixed*: Security vulnerabilities.
+
 #### Version 1.13 (Dec 15, 2025)
 
 * *Fixed*: API KEY authentication method and form validation.
