@@ -44,12 +44,12 @@
         <f:textbox/>
     </f:entry>
     <f:entry title="SLM License Access Key" field="slmLicenceAccessKey" description="Specifies SLM License Access Key">
-        <f:textbox/>
+        <f:password/>
     </f:entry>
     <f:entry title="SLM License Client Id" field="slmLicenseClientId" description="Specifies SLM License Client Id">
         <f:textbox/>
     </f:entry>
     <f:entry title="SLM License Client Secret" field="slmLicenseClientSecret" description="Specifies SLM License Client Secret">
-        <f:textbox/>
+        <f:password/>
     </f:entry>
 </j:jelly>
