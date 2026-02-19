@@ -46,24 +46,36 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     private static final String API_KEY_WARNING_MESSAGE = "Required when using license from SLM Onpremise License Server. Please enter valid %s for %s Authentication Method";
     private final String pathToTestrunner;
     private final String pathToProjectFile;
+
+    private final Secret projectPassword;
+    private final Secret slmLicenceAccessKey;
+    private final Secret slmLicenseClientSecret;
+
     private String testSuite;
     private String testCase;
     private String testSuiteTags;
     private String testCaseTags;
-    private Secret projectPassword;
     private String environment;
     private String authMethod;
     private String slmLicenceApiHost;
     private String slmLicenceApiPort;
-    private String slmLicenceAccessKey;
     private String slmLicenseClientId;
-    private String slmLicenseClientSecret;
 
     @DataBoundConstructor
     public JenkinsSoapUIProTestRunner(String pathToTestrunner,
-                                      String pathToProjectFile) {
+                                      String pathToProjectFile,
+                                      String projectPassword,
+                                      String slmLicenceAccessKey,
+                                      String slmLicenseClientSecret) {
         this.pathToTestrunner = pathToTestrunner;
         this.pathToProjectFile = pathToProjectFile;
+        this.projectPassword = buildSecret(projectPassword);
+        this.slmLicenceAccessKey = buildSecret(slmLicenceAccessKey);
+        this.slmLicenseClientSecret = buildSecret(slmLicenseClientSecret);
+    }
+
+    private Secret buildSecret(String value) {
+        return StringUtils.isNotEmpty(value) && !"********".equals(value) ? Secret.fromString(value) : null;
     }
 
     public String getPathToTestrunner() {
@@ -114,11 +126,6 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         return projectPassword;
     }
 
-    @DataBoundSetter
-    public void setProjectPassword(String projectPassword) {
-        this.projectPassword = Secret.fromString(projectPassword);
-    }
-
     public String getEnvironment() {
         return environment;
     }
@@ -128,13 +135,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.environment = environment;
     }
 
-    public String getSlmLicenceAccessKey() {
+    public Secret getSlmLicenceAccessKey() {
         return slmLicenceAccessKey;
-    }
-
-    @DataBoundSetter
-    public void setSlmLicenceAccessKey(String slmLicenceAccessKey) {
-        this.slmLicenceAccessKey = slmLicenceAccessKey;
     }
 
     public String getAuthMethod() {
@@ -173,13 +175,8 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         this.slmLicenseClientId = slmLicenseClientId;
     }
 
-    public String getSlmLicenseClientSecret() {
+    public Secret getSlmLicenseClientSecret() {
         return this.slmLicenseClientSecret;
-    }
-
-    @DataBoundSetter
-    public void setSlmLicenseClientSecret(String slmLicenseClientSecret) {
-        this.slmLicenseClientSecret = slmLicenseClientSecret;
     }
 
     @Override
@@ -200,10 +197,10 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
                     .withAuthMethod(authMethod)
                     .withSlmLicenceApiHost(slmLicenceApiHost)
                     .withSlmLicenceApiPort(slmLicenceApiPort)
-                    .withSlmLicenceAccessKey(slmLicenceAccessKey)
+                    .withSlmLicenceAccessKey(Secret.toString(slmLicenceAccessKey))
                     .withWorkspace(workspace)
                     .withSlmLicenseClientId(slmLicenseClientId)
-                    .withSlmLicenseClientSecret(slmLicenseClientSecret)
+                    .withSlmLicenseClientSecret(Secret.toString(slmLicenseClientSecret))
                     .build(), run, launcher, listener);
             if (process == null) {
                 throw new AbortException("Could not start ReadyAPI functional testing.");
