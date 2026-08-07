@@ -9,7 +9,6 @@ import hudson.model.Result;
 import hudson.model.Run;
 import hudson.model.TaskListener;
 import hudson.remoting.VirtualChannel;
-import org.apache.commons.lang.StringUtils;
 
 import javax.annotation.Nonnull;
 import java.io.BufferedReader;
@@ -21,6 +20,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 import java.util.Properties;
+import hudson.Util;
 
 class ProcessRunner {
     public static final String READYAPI_REPORT_DIRECTORY = "ReadyAPI_report";
@@ -60,7 +60,7 @@ class ProcessRunner {
         EnvVars envVars = run.getEnvironment(listener);
         String testrunnerFilePath = buildTestRunnerPath(envVars.expand(params.getPathToTestrunner()), launcher);
         FilePath testrunnerFile = new FilePath(channel, testrunnerFilePath);
-        if (StringUtils.isNotBlank(testrunnerFilePath) && testrunnerFile.exists() && testrunnerFile.length() != 0) {
+        if (Util.fixEmptyAndTrim(testrunnerFilePath) != null && testrunnerFile.exists() && testrunnerFile.length() != 0) {
             try {
                 if (!isSoapUIProTestrunner(testrunnerFile)) {
                     out.println("The testrunner file is not correct. Please confirm it's the testrunner for ReadyAPI Test. Exiting.");
@@ -87,8 +87,8 @@ class ProcessRunner {
         boolean isPrintableReportTypeSet = false;
         String testSuite = params.getTestSuite();
         String testCase = params.getTestCase();
-        if (StringUtils.isNotBlank(testCase)) {
-            if (StringUtils.isNotBlank(testSuite)) {
+        if (Util.fixEmptyAndTrim(testCase) != null) {
+            if (Util.fixEmptyAndTrim(testSuite) != null) {
                 processParameterList.addAll(Arrays.asList("-c", testCase));
                 processParameterList.addAll(Arrays.asList("-R", TESTCASE_REPORT));
                 setPrintableReportParams(createFolderName(testSuite) + slaveFileSeparator +
@@ -99,7 +99,7 @@ class ProcessRunner {
                 return null;
             }
         }
-        if (StringUtils.isNotBlank(testSuite)) {
+        if (Util.fixEmptyAndTrim(testSuite) != null) {
             processParameterList.addAll(Arrays.asList("-s", testSuite));
             if (!isPrintableReportTypeSet) {
                 processParameterList.addAll(Arrays.asList("-R", TESTSUITE_REPORT));
@@ -108,16 +108,16 @@ class ProcessRunner {
                 isPrintableReportTypeSet = true;
             }
         }
-        if (StringUtils.isNotBlank(params.getTestSuiteTags())) {
+        if (Util.fixEmptyAndTrim(params.getTestSuiteTags()) != null) {
             processParameterList.addAll(Arrays.asList("-T", "TestSuite " + params.getTestSuiteTags()));
         }
-        if (StringUtils.isNotBlank(params.getTestCaseTags())) {
+        if (Util.fixEmptyAndTrim(params.getTestCaseTags()) != null) {
             processParameterList.addAll(Arrays.asList("-T", "TestCase " + params.getTestCaseTags()));
         }
-        if (StringUtils.isNotBlank(params.getProjectPassword())) {
+        if (Util.fixEmptyAndTrim(params.getProjectPassword()) != null) {
             processParameterList.addAll(Arrays.asList("-x", params.getProjectPassword()));
         }
-        if (StringUtils.isNotBlank(params.getEnvironment())) {
+        if (Util.fixEmptyAndTrim(params.getEnvironment()) != null) {
             processParameterList.addAll(Arrays.asList("-E", params.getEnvironment()));
         }
 
@@ -140,7 +140,7 @@ class ProcessRunner {
 
         String projectFilePath = envVars.expand(params.getPathToProjectFile());
         FilePath projectFile = new FilePath(channel, projectFilePath);
-        if (StringUtils.isNotBlank(projectFilePath) && projectFile.exists()
+        if (Util.fixEmptyAndTrim(projectFilePath) != null && projectFile.exists()
                 && (projectFile.isDirectory() || projectFile.length() != 0)) {
             try {
                 isSoapUIProProject = ProjectFileValidator.isValidProjectPath(projectFile);
@@ -217,13 +217,13 @@ class ProcessRunner {
     }
 
     private void addParameterIfNotBlank(List<String> processParameterList, String paramSymbol, String value) {
-        if (StringUtils.isNotBlank(value)) {
+        if (Util.fixEmptyAndTrim(value) != null) {
             processParameterList.addAll(Arrays.asList(paramSymbol, value));
         }
     }
 
     private void addCustomParameterIfNotBlank(List<String> processParameterList, String paramSymbol, String value) {
-        if (StringUtils.isNotBlank(value)) {
+        if (Util.fixEmptyAndTrim(value) != null) {
             processParameterList.add(paramSymbol + "=" + value);
         }
     }
@@ -237,7 +237,7 @@ class ProcessRunner {
     }
 
     private String buildTestRunnerPath(String pathToTestrunnerFile, Launcher launcher) throws IOException, InterruptedException {
-        if (!StringUtils.isNotBlank(pathToTestrunnerFile)) {
+        if (Util.fixEmptyAndTrim(pathToTestrunnerFile) == null) {
             return "";
         }
         if (!new FilePath(channel, pathToTestrunnerFile).isDirectory()) {
