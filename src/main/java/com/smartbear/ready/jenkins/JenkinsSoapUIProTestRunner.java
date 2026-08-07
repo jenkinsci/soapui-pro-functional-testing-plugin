@@ -17,7 +17,6 @@ import hudson.util.ListBoxModel;
 import hudson.util.Secret;
 import jenkins.tasks.SimpleBuildStep;
 import net.sf.json.JSONObject;
-import org.apache.commons.lang.StringUtils;
 import org.jenkinsci.Symbol;
 import org.kohsuke.stapler.DataBoundConstructor;
 import org.kohsuke.stapler.DataBoundSetter;
@@ -28,6 +27,7 @@ import javax.annotation.Nonnull;
 import java.io.File;
 import java.io.IOException;
 import java.io.PrintStream;
+import hudson.Util;
 
 @SuppressWarnings("unused")
 public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildStep {
@@ -75,7 +75,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
     }
 
     private Secret buildSecret(String value) {
-        return StringUtils.isNotEmpty(value) && !"********".equals(value) ? Secret.fromString(value) : null;
+        return Util.fixEmpty(value) != null && !"********".equals(value) ? Secret.fromString(value) : null;
     }
 
     public String getPathToTestrunner() {
@@ -314,7 +314,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
 
         public FormValidation doCheckSlmLicenceApiHost(@QueryParameter String value, @QueryParameter String authMethod) {
             final AuthMethod slmAuthMethod = AuthMethod.getValue(authMethod);
-            if (StringUtils.isEmpty(value)) {
+            if (Util.fixEmpty(value) == null) {
                 switch (slmAuthMethod) {
                     case ACCESS_FOR_EVERYONE:
                         return FormValidation.error(String.format(ERROR_INFO, API_HOST, AuthMethod.ACCESS_FOR_EVERYONE.getDisplayName()));
@@ -343,7 +343,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         }
 
         private boolean isValidPort(String port) {
-            return StringUtils.isNotEmpty(port) && hasValidPortContent(port);
+            return Util.fixEmpty(port) != null && hasValidPortContent(port);
         }
 
         private boolean hasValidPortContent(String port) {
@@ -357,7 +357,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
 
         public FormValidation doCheckSlmLicenceAccessKey(@QueryParameter String value, @QueryParameter String authMethod) {
             final AuthMethod slmAuthMethod = AuthMethod.getValue(authMethod);
-            if (StringUtils.isNotEmpty(value)) {
+            if (Util.fixEmpty(value) != null) {
                 switch (slmAuthMethod) {
                     case ACCESS_FOR_EVERYONE:
                         return FormValidation.error(String.format(NOT_EMPTY_VALUE_ERROR_INFO, API_KEY, slmAuthMethod.getDisplayName()));
@@ -371,7 +371,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
 
         public FormValidation doCheckSlmLicenseClientId(@QueryParameter String value, @QueryParameter String authMethod) {
             final AuthMethod slmAuthMethod = AuthMethod.getValue(authMethod);
-            if (StringUtils.isNotEmpty(value)) {
+            if (Util.fixEmpty(value) != null) {
                 switch (slmAuthMethod) {
                     case API_KEY:
                         return FormValidation.error(String.format(NOT_EMPTY_VALUE_ERROR_INFO, CLIENT_ID, slmAuthMethod.getDisplayName()));
@@ -385,7 +385,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
 
         public FormValidation doCheckSlmLicenseClientSecret(@QueryParameter String value, @QueryParameter String authMethod) {
             final AuthMethod slmAuthMethod = AuthMethod.getValue(authMethod);
-            if (StringUtils.isNotEmpty(value)) {
+            if (Util.fixEmpty(value) != null) {
                 switch (slmAuthMethod) {
                     case API_KEY:
                         return FormValidation.error(String.format(NOT_EMPTY_VALUE_ERROR_INFO, CLIENT_SECRET, slmAuthMethod.getDisplayName()));
@@ -400,7 +400,7 @@ public class JenkinsSoapUIProTestRunner extends Builder implements SimpleBuildSt
         private FormValidation validateEmptyValue(final String value, final AuthMethod authMethod,
                                                   final String selectedAuthMethod, final String fieldName) {
             final AuthMethod slmAuthMethod = AuthMethod.getValue(selectedAuthMethod);
-            if (StringUtils.isEmpty(value) && authMethod.equals(slmAuthMethod)) {
+            if (Util.fixEmpty(value) == null && authMethod.equals(slmAuthMethod)) {
                 return FormValidation.error(String.format(ERROR_INFO, fieldName, slmAuthMethod.getDisplayName()));
             }
             return FormValidation.ok();
